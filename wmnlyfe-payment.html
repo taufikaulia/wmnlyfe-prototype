@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WMNlyfe — Pembayaran</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--pink:#D4527B;--pink-light:#FBEAF0;--pink-mid:#ED93B1;--pink-deep:#4B1528;--cream:#FAF7F4;--dark:#1C1C2E;--body:#5A5A7A;--white:#FFFFFF;--teal:#5DCAA5;--teal-bg:#E1F5EE;--teal-dark:#04342C;--border:#E8E3DF;--r:12px}
+body{font-family:'Poppins',sans-serif;background:var(--cream);color:var(--dark);min-height:100vh}
+.demo-bar{background:var(--dark);padding:10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.demo-label{font-size:10px;font-weight:600;color:rgba(255,255,255,.4);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.demo-btn{background:rgba(255,255,255,.08);border:0.5px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);border-radius:99px;padding:4px 14px;font-size:11px;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;transition:all .15s}
+.demo-btn:hover{background:var(--pink);border-color:var(--pink);color:#fff}
+.top-nav{position:sticky;top:0;z-index:50;background:rgba(250,247,244,.94);backdrop-filter:blur(12px);border-bottom:0.5px solid #ED93B122;padding:12px 24px;display:flex;align-items:center;gap:10px}
+.nav-logo{font-size:15px;font-weight:800;color:var(--pink);text-decoration:none}
+.nav-secure{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--teal-dark);font-weight:500}
+.nav-lock{width:18px;height:18px;background:var(--teal-bg);border:0.5px solid var(--teal);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px}
+.nav-back{margin-left:auto;background:none;border:none;color:var(--body);cursor:pointer;font-family:'Poppins',sans-serif;font-size:12px;font-weight:500;padding:5px 10px;border-radius:99px;transition:all .15s}
+.nav-back:hover{background:var(--pink-light);color:var(--pink)}
+.page-wrap{max-width:540px;margin:0 auto;padding:36px 20px 60px}
+.order-eyebrow{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--pink);margin-bottom:6px}
+.order-title{font-size:22px;font-weight:800;color:var(--dark);letter-spacing:-.02em;margin-bottom:24px}
+.arch-teaser{background:var(--pink-light);border:1px solid var(--pink-mid);border-radius:var(--r);padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:12px}
+.teaser-emoji{font-size:32px;flex-shrink:0;filter:blur(3px);user-select:none}
+.teaser-label{font-size:10px;font-weight:600;color:var(--pink);letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px}
+.teaser-name{font-size:15px;font-weight:800;color:var(--pink-deep);filter:blur(4px);user-select:none}
+.teaser-note{font-size:11px;color:var(--pink);font-weight:500;margin-top:3px}
+.includes-card{background:var(--white);border:0.5px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:20px}
+.inc-title{font-size:10px;font-weight:700;color:var(--body);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.inc-item{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--dark);padding:4px 0}
+.inc-check{width:18px;height:18px;border-radius:5px;background:var(--teal-bg);border:0.5px solid var(--teal);color:var(--teal-dark);font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.price-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-top:0.5px solid var(--border);margin-bottom:20px}
+.price-label{font-size:14px;color:var(--body)}
+.price-amount{font-size:26px;font-weight:800;color:var(--dark);letter-spacing:-.02em}
+.price-note{font-size:11px;color:var(--body);margin-top:2px}
+.delivery-card{background:var(--white);border:0.5px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:20px}
+.field-label{font-size:11px;font-weight:700;color:var(--body);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;display:block}
+.field-input{width:100%;background:var(--cream);border:1px solid var(--border);border-radius:8px;padding:10px 13px;font-size:14px;color:var(--dark);font-family:'Poppins',sans-serif;outline:none;transition:border-color .15s}
+.field-input:focus{border-color:var(--pink-mid);background:var(--white)}
+.field-toggle{display:flex;gap:8px;margin-bottom:10px}
+.toggle-btn{flex:1;padding:8px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--body);font-family:'Poppins',sans-serif;transition:all .15s}
+.toggle-btn.on{border-color:var(--pink);background:var(--pink-light);color:var(--pink-deep)}
+.btn-pay{width:100%;background:var(--pink);color:#fff;border:none;border-radius:99px;padding:16px 24px;font-size:16px;font-weight:800;font-family:'Poppins',sans-serif;cursor:pointer;transition:opacity .15s,transform .1s;letter-spacing:-.01em;margin-bottom:12px}
+.btn-pay:hover{opacity:.9;transform:translateY(-1px)}
+.pay-note{text-align:center;font-size:11px;color:var(--body)}
+
+/* SNAP OVERLAY */
+.snap-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:flex;align-items:flex-end;justify-content:center;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.snap-modal{background:#fff;width:100%;max-width:440px;border-radius:20px 20px 0 0;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;animation:slideUp .3s cubic-bezier(.2,0,.2,1)}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@media(min-width:500px){.snap-overlay{align-items:center}.snap-modal{border-radius:16px;max-height:85vh}}
+.snap-header{padding:14px 16px 12px;border-bottom:0.5px solid #eee;flex-shrink:0}
+.snap-header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.snap-brand{display:flex;align-items:center;gap:6px}
+.snap-logo{font-size:13px;font-weight:800;color:var(--pink)}
+.snap-by{font-size:10px;color:#aaa}
+.snap-close{width:28px;height:28px;border-radius:50%;background:#f5f5f5;border:none;cursor:pointer;font-size:16px;color:#666;display:flex;align-items:center;justify-content:center}
+.snap-close:hover{background:#eee}
+.snap-amount-row{display:flex;align-items:center;justify-content:space-between}
+.snap-amount{font-size:22px;font-weight:800;color:#1a1a1a;letter-spacing:-.02em}
+.snap-timer{font-size:11px;color:#e74c3c;font-weight:600;background:#ffeaea;padding:3px 8px;border-radius:4px}
+.snap-body{overflow-y:auto;flex:1}
+.snap-section-label{font-size:11px;font-weight:600;color:#888;padding:12px 16px 6px;text-transform:uppercase;letter-spacing:.06em}
+.method-row{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:0.5px solid #f0f0f0;cursor:pointer;transition:background .12s}
+.method-row:hover{background:#fafafa}
+.method-name{font-size:13px;font-weight:600;color:#1a1a1a;flex:1;min-width:0}
+.method-sub{font-size:10px;color:#999;margin-top:1px}
+.method-icons{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.method-icon{height:22px;padding:0 6px;border-radius:4px;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;border:0.5px solid rgba(0,0,0,.1);white-space:nowrap}
+.method-chev{color:#ccc;font-size:16px;flex-shrink:0}
+.snap-back{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#666;cursor:pointer;margin-bottom:16px;background:none;border:none;font-family:'Poppins',sans-serif}
+.snap-back:hover{color:#333}
+
+/* QRIS VIEW */
+.qris-wrap{padding:20px 16px;text-align:center}
+.qris-label{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.qris-box{background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:14px;display:inline-block;margin-bottom:10px}
+.qris-amount{font-size:18px;font-weight:800;color:#1a1a1a;margin-bottom:4px}
+.qris-note{font-size:11px;color:#999;margin-bottom:14px}
+.qris-apps{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+.qris-app{font-size:10px;font-weight:700;padding:4px 10px;border-radius:99px;border:0.5px solid rgba(0,0,0,.1)}
+
+/* TRANSFER VIEW */
+.transfer-wrap{padding:16px}
+.bank-select{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.bank-btn{padding:12px 8px;border:1.5px solid #e0e0e0;border-radius:8px;cursor:pointer;text-align:center;font-size:11px;font-weight:700;color:#333;background:#fff;font-family:'Poppins',sans-serif;transition:all .15s}
+.bank-btn:hover,.bank-btn.on{border-color:var(--pink);background:var(--pink-light);color:var(--pink-deep)}
+.va-box{background:#f8f8f8;border-radius:10px;padding:14px;margin-bottom:12px}
+.va-label{font-size:10px;color:#888;font-weight:600;text-transform:uppercase;margin-bottom:4px}
+.va-number{font-size:22px;font-weight:800;letter-spacing:.08em;color:#1a1a1a;font-family:monospace}
+.va-copy{background:var(--pink);color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;margin-top:8px}
+
+/* EWALLET VIEW */
+.ewallet-wrap{padding:20px 16px;text-align:center}
+.ewallet-icon{font-size:44px;margin-bottom:10px;display:block}
+.ewallet-title{font-size:16px;font-weight:700;color:#1a1a1a;margin-bottom:6px}
+.ewallet-desc{font-size:13px;color:#666;line-height:1.6;margin-bottom:20px}
+
+/* SHARED SNAP BUTTON */
+.btn-snap-confirm{background:var(--pink);color:#fff;border:none;border-radius:99px;padding:13px 32px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;width:100%}
+.btn-snap-confirm:hover{opacity:.9}
+
+/* SUCCESS STATE */
+.success-wrap{text-align:center;max-width:440px;margin:0 auto;padding:24px 0}
+.success-circle{width:80px;height:80px;border-radius:50%;background:var(--teal-bg);border:2px solid var(--teal);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;animation:popIn .4s cubic-bezier(.2,0,.2,1.4)}
+@keyframes popIn{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
+.success-check{font-size:36px}
+.success-title{font-size:26px;font-weight:800;color:var(--dark);letter-spacing:-.02em;margin-bottom:6px}
+.success-sub{font-size:14px;color:var(--body);margin-bottom:24px}
+.success-card{background:var(--teal-bg);border:0.5px solid var(--teal);border-radius:14px;padding:18px;margin-bottom:24px;text-align:left}
+.success-card-title{font-size:10px;font-weight:700;color:var(--teal-dark);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.success-email{font-size:15px;font-weight:700;color:var(--teal-dark);margin-bottom:4px}
+.success-hint{font-size:12px;color:#2D6B5A;line-height:1.6}
+.btn-results{width:100%;background:var(--pink);color:#fff;border:none;border-radius:99px;padding:15px 24px;font-size:15px;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;margin-bottom:10px}
+.btn-results:hover{opacity:.9}
+.btn-home2{width:100%;background:transparent;color:var(--pink);border:1.5px solid var(--pink);border-radius:99px;padding:13px 24px;font-size:14px;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer}
+.btn-home2:hover{background:var(--pink-light)}
+
+.hidden{display:none!important}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--dark);color:#fff;border-radius:99px;padding:10px 22px;font-size:12px;font-weight:500;opacity:0;transition:opacity .2s;pointer-events:none;z-index:999;white-space:nowrap}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<div class="demo-bar">
+  <span class="demo-label">Demo:</span>
+  <button class="demo-btn" onclick="openSNAP()">Buka SNAP Popup</button>
+  <button class="demo-btn" onclick="showSuccess()">Bayar Berhasil</button>
+  <button class="demo-btn" onclick="resetDemo()">Reset</button>
+</div>
+
+<nav class="top-nav">
+  <a href="wmnlyfe-landing.html" class="nav-logo">WMNlyfe</a>
+  <div class="nav-secure"><div class="nav-lock">&#128274;</div>Pembayaran aman · Midtrans</div>
+  <button class="nav-back" onclick="history.back()">&#8592; Kembali</button>
+</nav>
+
+<!-- ORDER STATE -->
+<div class="page-wrap" id="stateOrder">
+  <div class="order-eyebrow">Satu langkah lagi</div>
+  <h1 class="order-title">Buka hasil lengkapmu</h1>
+
+  <div class="arch-teaser">
+    <div class="teaser-emoji">🔥</div>
+    <div>
+      <div class="teaser-label">Tipe konflikmu</div>
+      <div class="teaser-name">Si Petarung Jujur</div>
+      <div class="teaser-note">&#128274; Tersedia setelah pembayaran</div>
+    </div>
+  </div>
+
+  <div class="includes-card">
+    <div class="inc-title">Yang kamu dapatkan</div>
+    <div class="inc-item"><div class="inc-check">&#10003;</div>Analisis mendalam gaya konflik dan pola relasi</div>
+    <div class="inc-item"><div class="inc-check">&#10003;</div>Archetype pasangan yang paling kompatibel</div>
+    <div class="inc-item"><div class="inc-check">&#10003;</div>3 tips komunikasi spesifik untuk tipe-mu</div>
+    <div class="inc-item"><div class="inc-check">&#10003;</div>Blind spot relasi yang perlu diwaspadai</div>
+    <div class="inc-item"><div class="inc-check">&#10003;</div>PDF hasil lengkap yang bisa disimpan</div>
+    <div class="inc-item"><div class="inc-check">&#10003;</div>Link undangan WhatsApp General Discussion</div>
+  </div>
+
+  <div class="price-row">
+    <div><div class="price-label">Total pembayaran</div><div class="price-note">Sekali bayar · Tidak ada langganan</div></div>
+    <div><div class="price-amount">Rp49.000</div></div>
+  </div>
+
+  <div class="delivery-card">
+    <label class="field-label">Kirim hasil ke</label>
+    <div class="field-toggle">
+      <button class="toggle-btn on" id="tEmail" onclick="setDel('email')">&#9993; Email</button>
+      <button class="toggle-btn"    id="tWA"    onclick="setDel('wa')">&#128172; WhatsApp</button>
+    </div>
+    <input class="field-input" id="delInput" type="email" placeholder="emailkamu@gmail.com">
+  </div>
+
+  <button class="btn-pay" onclick="openSNAP()">Lanjut ke Pembayaran &#8594;</button>
+  <div class="pay-note">&#128274; Proses aman via Midtrans · SSL encrypted · berbagai metode pembayaran tersedia</div>
+</div>
+
+<!-- SNAP MODAL -->
+<div class="snap-overlay hidden" id="snapOverlay" onclick="handleBg(event)">
+  <div class="snap-modal">
+
+    <div class="snap-header">
+      <div class="snap-header-top">
+        <div class="snap-brand"><span class="snap-logo">WMNlyfe</span><span class="snap-by">via Midtrans</span></div>
+        <button class="snap-close" onclick="closeSNAP()">&#10005;</button>
+      </div>
+      <div class="snap-amount-row">
+        <div class="snap-amount">Rp49.000</div>
+        <div class="snap-timer" id="snapTimer">23:59</div>
+      </div>
+    </div>
+
+    <!-- Method List -->
+    <div id="vMethods" class="snap-body">
+      <div class="snap-section-label">Pilih metode pembayaran</div>
+      <div class="method-row" onclick="selMethod('card')">
+        <div style="flex:1"><div class="method-name">Kartu kredit / debit</div>
+          <div class="method-icons" style="margin-top:4px">
+            <div class="method-icon" style="background:#1A237E;color:#fff">VISA</div>
+            <div class="method-icon" style="background:#EB001B;color:#fff">MC</div>
+            <div class="method-icon" style="background:#003087;color:#fff">JCB</div>
+          </div></div>
+        <div class="method-chev">&#8250;</div>
+      </div>
+      <div class="method-row" onclick="selMethod('transfer')">
+        <div style="flex:1"><div class="method-name">Transfer bank</div>
+          <div class="method-icons" style="margin-top:4px">
+            <div class="method-icon" style="background:#003e80;color:#fff">BCA</div>
+            <div class="method-icon" style="background:#F7941D;color:#fff">Mandiri</div>
+            <div class="method-icon" style="background:#F37021;color:#fff">BNI</div>
+            <div class="method-icon" style="background:#1B4089;color:#fff">BRI</div>
+          </div></div>
+        <div class="method-chev">&#8250;</div>
+      </div>
+      <div class="method-row" onclick="selMethod('gopay')">
+        <div style="flex:1"><div class="method-name">GoPay</div><div class="method-sub">Bayar dari aplikasi Gojek</div></div>
+        <div class="method-icons"><div class="method-icon" style="background:#00AED6;color:#fff">Go</div></div>
+        <div class="method-chev">&#8250;</div>
+      </div>
+      <div class="method-row" onclick="selMethod('ovo')">
+        <div style="flex:1"><div class="method-name">OVO</div></div>
+        <div class="method-icons"><div class="method-icon" style="background:#4C3494;color:#fff">OVO</div></div>
+        <div class="method-chev">&#8250;</div>
+      </div>
+      <div class="method-row" onclick="selMethod('shopee')">
+        <div style="flex:1"><div class="method-name">ShopeePay</div></div>
+        <div class="method-icons"><div class="method-icon" style="background:#EE4D2D;color:#fff">SPay</div></div>
+        <div class="method-chev">&#8250;</div>
+      </div>
+      <div class="method-row" onclick="selMethod('qris')">
+        <div style="flex:1"><div class="method-name">QRIS</div><div class="method-sub">Scan QR · semua e-wallet &amp; m-banking</div></div>
+        <div class="method-icons"><div class="method-icon" style="background:#e30613;color:#fff">QRIS</div></div>
+        <div class="method-chev">&#8250;</div>
+      </div>
+      <div class="method-row" onclick="selMethod('indomaret')">
+        <div style="flex:1"><div class="method-name">Indomaret / Alfamart</div><div class="method-sub">Bayar tunai di minimarket</div></div>
+        <div class="method-chev">&#8250;</div>
+      </div>
+    </div>
+
+    <!-- QRIS View -->
+    <div id="vQRIS" class="snap-body hidden">
+      <div class="qris-wrap">
+        <button class="snap-back" onclick="backMethods()">&#8592; Kembali</button>
+        <div class="qris-label">Scan QR Code</div>
+        <div class="qris-box"><svg id="qrSVG" width="170" height="170" xmlns="http://www.w3.org/2000/svg"></svg></div>
+        <div class="qris-amount">Rp49.000</div>
+        <div class="qris-note">Berlaku <span id="qrisTimer" style="color:#e74c3c;font-weight:700">14:59</span></div>
+        <div class="qris-apps">
+          <span class="qris-app" style="background:#00AED6;color:#fff">GoPay</span>
+          <span class="qris-app" style="background:#4C3494;color:#fff">OVO</span>
+          <span class="qris-app" style="background:#EE4D2D;color:#fff">ShopeePay</span>
+          <span class="qris-app" style="background:#003e80;color:#fff">m-BCA</span>
+          <span class="qris-app" style="background:#F7941D;color:#fff">Mandiri</span>
+        </div>
+        <button class="btn-snap-confirm" onclick="simulatePaid()">&#10003; Simulasi: Bayar Berhasil</button>
+      </div>
+    </div>
+
+    <!-- Transfer View -->
+    <div id="vTransfer" class="snap-body hidden">
+      <div class="transfer-wrap">
+        <button class="snap-back" onclick="backMethods()">&#8592; Kembali</button>
+        <div class="snap-section-label" style="padding:0 0 12px">Pilih bank</div>
+        <div class="bank-select">
+          <button class="bank-btn on" onclick="selBank(this,'BCA','1234 5678 9012 3')">BCA</button>
+          <button class="bank-btn" onclick="selBank(this,'Mandiri','8901 2345 6789 0')">Mandiri</button>
+          <button class="bank-btn" onclick="selBank(this,'BNI','0123 4567 8901 2')">BNI</button>
+          <button class="bank-btn" onclick="selBank(this,'BRI','7890 1234 5678 9')">BRI</button>
+        </div>
+        <div class="va-box">
+          <div class="va-label">Nomor Virtual Account <span id="vaBank">BCA</span></div>
+          <div class="va-number" id="vaNum">1234 5678 9012 3</div>
+          <button class="va-copy" onclick="copyVA()">Salin nomor</button>
+        </div>
+        <div style="font-size:11px;color:#888;line-height:1.6;margin-bottom:14px">Transfer tepat <strong>Rp49.000</strong>. Verifikasi otomatis 1–3 menit.</div>
+        <button class="btn-snap-confirm" onclick="simulatePaid()">&#10003; Simulasi: Bayar Berhasil</button>
+      </div>
+    </div>
+
+    <!-- E-Wallet View -->
+    <div id="vEwallet" class="snap-body hidden">
+      <div class="ewallet-wrap">
+        <button class="snap-back" onclick="backMethods()" style="margin:0 auto 16px">&#8592; Kembali</button>
+        <span class="ewallet-icon" id="ewIcon">💚</span>
+        <div class="ewallet-title" id="ewTitle">GoPay</div>
+        <div class="ewallet-desc" id="ewDesc"></div>
+        <button class="btn-snap-confirm" id="ewBtn" onclick="simulatePaid()">Buka Aplikasi GoPay</button>
+      </div>
+    </div>
+
+    <!-- Card View -->
+    <div id="vCard" class="snap-body hidden">
+      <div style="padding:16px">
+        <button class="snap-back" onclick="backMethods()">&#8592; Kembali</button>
+        <div class="snap-section-label" style="padding:0 0 12px">Detail kartu</div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
+          <input class="field-input" placeholder="Nomor kartu (16 digit)" maxlength="19" style="letter-spacing:.1em;font-family:monospace;font-size:15px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <input class="field-input" placeholder="MM / YY">
+            <input class="field-input" placeholder="CVV" maxlength="4">
+          </div>
+          <input class="field-input" placeholder="Nama di kartu">
+        </div>
+        <button class="btn-snap-confirm" onclick="simulatePaid()">Bayar Rp49.000</button>
+      </div>
+    </div>
+
+    <!-- Indomaret View -->
+    <div id="vIndomaret" class="snap-body hidden">
+      <div style="padding:16px;text-align:center">
+        <button class="snap-back" onclick="backMethods()" style="margin:0 auto 16px">&#8592; Kembali</button>
+        <div style="font-size:40px;margin-bottom:10px">&#127978;</div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:6px">Kode Pembayaran</div>
+        <div style="font-size:26px;font-weight:800;letter-spacing:.1em;font-family:monospace;background:#f5f5f5;border-radius:10px;padding:14px;margin:12px 0">1234 5678 9012</div>
+        <div style="font-size:12px;color:#666;line-height:1.6;margin-bottom:16px">Tunjukkan kode ini ke kasir Indomaret atau Alfamart. Bayar <strong>Rp49.000</strong>. Berlaku 24 jam.</div>
+        <button class="btn-snap-confirm" onclick="simulatePaid()">&#10003; Simulasi: Bayar Berhasil</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SUCCESS STATE -->
+<div class="page-wrap hidden" id="stateSuccess">
+  <div class="success-wrap">
+    <div class="success-circle"><span class="success-check">&#10003;</span></div>
+    <h2 class="success-title">Pembayaran Berhasil!</h2>
+    <p class="success-sub">Rp49.000 · <span id="paidAt"></span></p>
+    <div class="success-card">
+      <div class="success-card-title">Hasil dikirim ke</div>
+      <div class="success-email" id="successDest">-</div>
+      <div class="success-hint">Cek inbox dalam 2 menit. Jika tidak muncul, periksa folder <strong>Spam</strong> atau <strong>Promotions</strong>.</div>
+    </div>
+    <button class="btn-results" onclick="window.location.href='wmnlyfe-full-results.html'">Lihat Hasil Lengkap &#8594;</button>
+    <button class="btn-home2" onclick="window.location.href='wmnlyfe-landing.html'">Kembali ke Halaman Utama</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+let snapInt=null,qrisInt=null,snapSec=1439,qrisSec=899;
+function fmt(s){return`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;}
+function setDel(t){document.getElementById('tEmail').classList.toggle('on',t==='email');document.getElementById('tWA').classList.toggle('on',t==='wa');const i=document.getElementById('delInput');i.type=t==='email'?'email':'tel';i.placeholder=t==='email'?'emailkamu@gmail.com':'628XXXXXXXXXX';}
+function openSNAP(){document.getElementById('snapOverlay').classList.remove('hidden');backMethods();snapSec=1439;clearInterval(snapInt);document.getElementById('snapTimer').textContent=fmt(snapSec);snapInt=setInterval(()=>{if(--snapSec<=0)clearInterval(snapInt);document.getElementById('snapTimer').textContent=fmt(snapSec);},1000);buildQR();}
+function closeSNAP(){document.getElementById('snapOverlay').classList.add('hidden');clearInterval(snapInt);clearInterval(qrisInt);}
+function handleBg(e){if(e.target===document.getElementById('snapOverlay'))closeSNAP();}
+function selMethod(m){['vMethods','vQRIS','vTransfer','vEwallet','vCard','vIndomaret'].forEach(v=>document.getElementById(v).classList.add('hidden'));const map={card:'vCard',transfer:'vTransfer',gopay:'vEwallet',ovo:'vEwallet',shopee:'vEwallet',qris:'vQRIS',indomaret:'vIndomaret'};document.getElementById(map[m]||'vMethods').classList.remove('hidden');if(m==='gopay')setEW('💚','GoPay','GoPay','Kamu akan diarahkan ke aplikasi Gojek untuk menyelesaikan pembayaran sebesar <strong>Rp49.000</strong>.','#00AED6');if(m==='ovo')setEW('💜','OVO','OVO','Kamu akan diarahkan ke aplikasi OVO untuk menyelesaikan pembayaran sebesar <strong>Rp49.000</strong>.','#4C3494');if(m==='shopee')setEW('🧡','ShopeePay','Shopee','Kamu akan diarahkan ke aplikasi Shopee untuk menyelesaikan pembayaran sebesar <strong>Rp49.000</strong>.','#EE4D2D');if(m==='qris'){qrisSec=899;clearInterval(qrisInt);document.getElementById('qrisTimer').textContent=fmt(qrisSec);qrisInt=setInterval(()=>{if(--qrisSec<=0)clearInterval(qrisInt);document.getElementById('qrisTimer').textContent=fmt(qrisSec);},1000);};}
+function setEW(ic,ti,app,desc,col){document.getElementById('ewIcon').textContent=ic;document.getElementById('ewTitle').textContent=ti;document.getElementById('ewDesc').innerHTML=desc;document.getElementById('ewBtn').textContent='Buka Aplikasi '+app;document.getElementById('ewBtn').style.background=col;}
+function backMethods(){['vQRIS','vTransfer','vEwallet','vCard','vIndomaret'].forEach(v=>document.getElementById(v).classList.add('hidden'));document.getElementById('vMethods').classList.remove('hidden');}
+function selBank(el,bank,va){document.querySelectorAll('.bank-btn').forEach(b=>b.classList.remove('on'));el.classList.add('on');document.getElementById('vaBank').textContent=bank;document.getElementById('vaNum').textContent=va;}
+function copyVA(){navigator.clipboard.writeText(document.getElementById('vaNum').textContent).catch(()=>{});toast('Nomor VA disalin!');}
+function buildQR(){const S=21,C=7,P=5,T=S*C+P*2,g=Array.from({length:S},()=>Array(S).fill(false));function f(r0,c0){for(let r=0;r<7;r++)for(let c=0;c<7;c++){const e=r===0||r===6||c===0||c===6,i=r>=2&&r<=4&&c>=2&&c<=4;g[r0+r][c0+c]=e||i;}}f(0,0);f(0,14);f(14,0);for(let i=8;i<=12;i++){g[6][i]=i%2===0;g[i][6]=i%2===0;}[[9,9],[9,11],[10,10],[11,9],[11,11],[13,10],[14,10],[15,11],[16,10],[10,13],[11,14],[12,13],[14,13],[15,14],[16,13],[17,12],[18,13],[19,12],[20,13],[9,16],[10,17],[11,16]].forEach(([r,c])=>{if(r<S&&c<S)g[r][c]=true;});let html='<rect width="'+T+'" height="'+T+'" fill="white"/>';for(let r=0;r<S;r++)for(let c=0;c<S;c++)if(g[r][c])html+=`<rect x="${c*C+P}" y="${r*C+P}" width="${C}" height="${C}" fill="#1C1C2E" rx="1"/>`;html+=`<rect x="${(T-26)/2}" y="${(T-11)/2}" width="26" height="11" rx="3" fill="#D4527B"/><text x="${T/2}" y="${T/2+4}" text-anchor="middle" font-family="Poppins,sans-serif" font-size="6" font-weight="800" fill="white">WMNlyfe</text>`;const svg=document.getElementById('qrSVG');svg.setAttribute('viewBox',`0 0 ${T} ${T}`);svg.innerHTML=html;}
+function simulatePaid(){closeSNAP();showSuccess();}
+function showSuccess(){document.getElementById('stateOrder').classList.add('hidden');document.getElementById('stateSuccess').classList.remove('hidden');const d=document.getElementById('delInput').value||'kamu@email.com';document.getElementById('successDest').textContent=d;const now=new Date();document.getElementById('paidAt').textContent=now.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'})+', '+now.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});}
+function resetDemo(){closeSNAP();document.getElementById('stateOrder').classList.remove('hidden');document.getElementById('stateSuccess').classList.add('hidden');}
+function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2400);}
+</script>
+</body>
+</html>

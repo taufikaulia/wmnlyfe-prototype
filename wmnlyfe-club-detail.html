@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WMNlyfe — Club Detail</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* Club theming (overridden per club) */
+  --c1: #7F77DD;      /* primary accent */
+  --c1-bg: #EEEDFE;   /* light bg */
+  --c1-bd: #AFA9EC;   /* border */
+  --c1-tx: #26215C;   /* dark text on light bg */
+  --c1-mid: #B4AEEA;  /* mid tone */
+
+  /* Fixed palette */
+  --pink:       #D4527B;
+  --pink-light: #FBEAF0;
+  --pink-mid:   #ED93B1;
+  --cream:      #FAF7F4;
+  --dark:       #1C1C2E;
+  --body:       #5A5A7A;
+  --white:      #FFFFFF;
+  --teal:       #5DCAA5;
+  --teal-bg:    #E1F5EE;
+  --teal-dark:  #04342C;
+  --border:     #E8E3DF;
+  --r:          12px;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--cream);
+  color: var(--dark);
+  min-height: 100vh;
+  padding-bottom: 80px; /* space for sticky bar */
+}
+
+/* ── DEMO BAR ──────────────────────────────────── */
+.demo-bar {
+  background: var(--dark); padding: 10px 20px;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.demo-label { font-size: 10px; font-weight: 600; color: rgba(255,255,255,.4); letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
+.demo-btns  { display: flex; gap: 6px; flex-wrap: wrap; }
+.demo-btn {
+  background: rgba(255,255,255,.08); border: 0.5px solid rgba(255,255,255,.15);
+  color: rgba(255,255,255,.7); border-radius: 99px; padding: 5px 14px;
+  font-size: 11px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer;
+  transition: all .15s;
+}
+.demo-btn:hover, .demo-btn.on { background: var(--c1); border-color: var(--c1); color: #fff; }
+
+/* ── NAV ───────────────────────────────────────── */
+.top-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(250,247,244,.94); backdrop-filter: blur(12px);
+  border-bottom: 0.5px solid #ED93B122; padding: 12px 24px;
+  display: flex; align-items: center; gap: 10px;
+}
+.nav-logo   { font-size: 15px; font-weight: 800; color: var(--pink); }
+.nav-club   {
+  font-size: 11px; font-weight: 600; color: var(--c1-tx);
+  background: var(--c1-bg); border: 0.5px solid var(--c1-bd);
+  border-radius: 4px; padding: 3px 8px; transition: all .3s;
+}
+.nav-back   {
+  margin-left: auto; background: none; border: none; color: var(--body);
+  cursor: pointer; font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 500;
+  padding: 5px 10px; border-radius: 99px; transition: all .15s;
+}
+.nav-back:hover { background: var(--c1-bg); color: var(--c1); }
+
+/* ── HERO ──────────────────────────────────────── */
+.hero {
+  background: var(--c1-bg); padding: 48px 20px 56px;
+  text-align: center; position: relative; overflow: hidden;
+  transition: background .35s;
+}
+.hero-bg-glyph {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 320px; font-weight: 800; line-height: 1; opacity: .05;
+  pointer-events: none; user-select: none; color: var(--c1-tx);
+  overflow: hidden; transition: all .35s;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; }
+
+.club-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--c1); color: #fff; border-radius: 99px;
+  padding: 5px 16px; font-size: 11px; font-weight: 700;
+  letter-spacing: .05em; text-transform: uppercase; margin-bottom: 20px;
+  transition: background .35s;
+}
+.hero-title {
+  font-size: clamp(28px, 6vw, 46px); font-weight: 800;
+  color: var(--c1-tx); line-height: 1.12; letter-spacing: -.03em;
+  margin-bottom: 12px; transition: color .35s;
+}
+.hero-tagline {
+  font-size: 15px; color: var(--c1-tx); opacity: .75; line-height: 1.72;
+  max-width: 460px; margin: 0 auto 28px; font-weight: 500;
+  transition: color .35s;
+}
+
+/* Stats row */
+.hero-stats {
+  display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 28px;
+}
+.stat-pill {
+  display: flex; align-items: center; gap: 5px;
+  background: rgba(255,255,255,.6); border: 0.5px solid rgba(255,255,255,.8);
+  border-radius: 99px; padding: 6px 14px; backdrop-filter: blur(4px);
+  font-size: 12px; font-weight: 600; color: var(--c1-tx);
+  transition: color .35s;
+}
+
+/* Spots indicator */
+.spots-wrap {
+  max-width: 340px; margin: 0 auto;
+  background: rgba(255,255,255,.55); border: 0.5px solid rgba(255,255,255,.8);
+  border-radius: 12px; padding: 14px 16px; backdrop-filter: blur(4px);
+}
+.spots-row {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
+}
+.spots-label { font-size: 12px; font-weight: 600; color: var(--c1-tx); }
+.spots-count { font-size: 12px; font-weight: 700; color: var(--c1); }
+.spots-track {
+  height: 6px; background: rgba(0,0,0,.1); border-radius: 99px; overflow: hidden;
+}
+.spots-fill {
+  height: 100%; background: var(--c1); border-radius: 99px;
+  transition: width .6s cubic-bezier(.4,0,.2,1) .2s, background .35s;
+}
+.spots-note { font-size: 11px; color: var(--c1-tx); opacity: .6; margin-top: 6px; text-align: left; }
+
+/* ── PAGE BODY ─────────────────────────────────── */
+.page-body { max-width: 680px; margin: 0 auto; padding: 0 20px 20px; }
+.section   { padding-top: 48px; }
+.sec-eyebrow {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--c1); margin-bottom: 8px; transition: color .35s;
+}
+.sec-title {
+  font-size: clamp(20px, 3vw, 26px); font-weight: 800; color: var(--dark);
+  letter-spacing: -.02em; line-height: 1.2; margin-bottom: 6px;
+}
+.sec-sub { font-size: 14px; color: var(--body); line-height: 1.65; margin-bottom: 20px; }
+.soft-div { height: 0.5px; background: linear-gradient(to right, transparent, #E8E3DF, transparent); margin-top: 48px; }
+
+/* ── WHO IS THIS FOR ───────────────────────────── */
+.persona-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.persona-card {
+  background: var(--c1-bg); border: 0.5px solid var(--c1-bd);
+  border-radius: var(--r); padding: 14px 16px; transition: all .35s;
+}
+.persona-check {
+  width: 22px; height: 22px; border-radius: 6px; background: var(--c1);
+  color: #fff; font-size: 11px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center; margin-bottom: 8px;
+  transition: background .35s;
+}
+.persona-text { font-size: 13px; color: var(--c1-tx); line-height: 1.5; transition: color .35s; }
+
+/* NOT FOR section */
+.not-for {
+  background: var(--white); border: 0.5px solid var(--border);
+  border-radius: var(--r); padding: 16px; margin-top: 12px;
+}
+.not-for-label { font-size: 10px; font-weight: 700; color: var(--body); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 10px; }
+.not-item { font-size: 13px; color: var(--body); padding: 5px 0; border-bottom: 0.5px solid var(--border); display: flex; align-items: center; gap: 8px; }
+.not-item:last-child { border: none; padding-bottom: 0; }
+.not-x { color: #C0392B; font-weight: 700; font-size: 12px; width: 16px; flex-shrink: 0; }
+
+/* ── CURRICULUM ────────────────────────────────── */
+.module-list { display: flex; flex-direction: column; gap: 10px; }
+.module-card {
+  background: var(--white); border: 0.5px solid var(--border);
+  border-radius: 14px; overflow: hidden;
+  transition: box-shadow .15s;
+}
+.module-card:hover { box-shadow: 0 4px 16px rgba(28,28,46,.07); }
+.module-header {
+  display: flex; align-items: flex-start; gap: 14px; padding: 18px 18px 16px; cursor: pointer;
+}
+.module-num {
+  width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+  background: var(--c1-bg); color: var(--c1);
+  font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center;
+  transition: all .35s;
+}
+.module-info { flex: 1; min-width: 0; }
+.module-name { font-size: 14px; font-weight: 700; color: var(--dark); margin-bottom: 3px; }
+.module-desc { font-size: 12px; color: var(--body); line-height: 1.5; }
+.module-toggle {
+  width: 24px; height: 24px; border-radius: 6px; flex-shrink: 0;
+  background: var(--border); color: var(--body);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; transition: all .2s; margin-top: 2px;
+}
+.module-card.open .module-toggle { background: var(--c1-bg); color: var(--c1); transform: rotate(45deg); }
+.module-body {
+  display: none; padding: 0 18px 16px 68px;
+}
+.module-card.open .module-body { display: block; }
+.concept-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.concept-chip {
+  background: var(--c1-bg); color: var(--c1-tx); border: 0.5px solid var(--c1-bd);
+  border-radius: 99px; padding: 4px 10px; font-size: 11px; font-weight: 500;
+  transition: all .35s;
+}
+.module-note { font-size: 12px; color: var(--body); line-height: 1.6; font-style: italic; }
+
+/* ── FORMAT ────────────────────────────────────── */
+.format-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.format-card {
+  background: var(--white); border: 0.5px solid var(--border);
+  border-radius: var(--r); padding: 16px 14px; text-align: center;
+}
+.format-icon {
+  width: 40px; height: 40px; border-radius: 12px; margin: 0 auto 10px;
+  background: var(--c1-bg); color: var(--c1);
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+  transition: all .35s;
+}
+.format-label { font-size: 10px; font-weight: 700; color: var(--body); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+.format-value { font-size: 13px; font-weight: 700; color: var(--dark); line-height: 1.3; }
+.format-note  { font-size: 11px; color: var(--body); margin-top: 3px; }
+
+/* Timeline */
+.timeline { margin-top: 20px; display: flex; flex-direction: column; gap: 0; }
+.tl-item {
+  display: flex; align-items: flex-start; gap: 14px; padding-bottom: 20px;
+  position: relative;
+}
+.tl-item:last-child { padding-bottom: 0; }
+.tl-item::before {
+  content: ''; position: absolute; left: 13px; top: 26px;
+  width: 1px; height: calc(100% - 10px); background: var(--border);
+}
+.tl-item:last-child::before { display: none; }
+.tl-dot {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  background: var(--c1-bg); border: 2px solid var(--c1);
+  color: var(--c1); font-size: 10px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .35s;
+}
+.tl-content { padding-top: 3px; }
+.tl-month { font-size: 12px; font-weight: 700; color: var(--c1); transition: color .35s; }
+.tl-text  { font-size: 13px; color: var(--dark); line-height: 1.5; margin-top: 2px; }
+
+/* ── BENEFITS ──────────────────────────────────── */
+.benefits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.benefit-card {
+  background: var(--white); border: 0.5px solid var(--border);
+  border-radius: var(--r); padding: 16px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.benefit-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: var(--c1-bg); color: var(--c1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0; transition: all .35s;
+}
+.benefit-name { font-size: 13px; font-weight: 700; color: var(--dark); }
+.benefit-desc { font-size: 12px; color: var(--body); line-height: 1.5; }
+
+/* ── PRICING ────────────────────────────────────── */
+.pricing-card {
+  background: var(--dark); border-radius: 20px;
+  padding: 32px 28px; text-align: center;
+}
+.pricing-label { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.4); margin-bottom: 8px; }
+.pricing-name  { font-size: 20px; font-weight: 800; color: var(--white); margin-bottom: 16px; }
+.early-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--c1); color: #fff; border-radius: 99px;
+  padding: 5px 14px; font-size: 11px; font-weight: 700;
+  margin-bottom: 12px; transition: background .35s;
+}
+.price-main  { font-size: 44px; font-weight: 800; color: var(--white); letter-spacing: -.03em; line-height: 1; }
+.price-orig  { font-size: 16px; color: rgba(255,255,255,.3); text-decoration: line-through; font-weight: 500; margin-left: 8px; }
+.price-per   { font-size: 13px; color: rgba(255,255,255,.45); margin: 6px 0 24px; }
+.pricing-includes { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; text-align: left; }
+.pi-item {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: rgba(255,255,255,.8);
+}
+.pi-check {
+  width: 20px; height: 20px; border-radius: 6px; flex-shrink: 0;
+  background: var(--c1); color: #fff; font-size: 10px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .35s;
+}
+.btn-daftar {
+  width: 100%; background: var(--c1); color: #fff; border: none;
+  border-radius: 99px; padding: 16px 24px; font-size: 16px; font-weight: 800;
+  font-family: 'Poppins', sans-serif; cursor: pointer;
+  transition: opacity .15s, transform .1s, background .35s; letter-spacing: -.01em;
+}
+.btn-daftar:hover { opacity: .9; transform: translateY(-1px); }
+.pricing-deadline { font-size: 11px; color: rgba(255,255,255,.35); margin-top: 12px; }
+
+/* ── FAQ ────────────────────────────────────────── */
+.faq-list { display: flex; flex-direction: column; gap: 0; }
+.faq-item { border-bottom: 0.5px solid var(--border); }
+.faq-item:last-child { border: none; }
+.faq-q {
+  width: 100%; background: none; border: none; text-align: left;
+  padding: 16px 0; cursor: pointer; font-family: 'Poppins', sans-serif;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.faq-q-text { font-size: 14px; font-weight: 600; color: var(--dark); line-height: 1.4; }
+.faq-icon {
+  width: 24px; height: 24px; border-radius: 6px; flex-shrink: 0;
+  background: var(--c1-bg); color: var(--c1); font-size: 14px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s, background .35s, color .35s;
+}
+.faq-item.open .faq-icon { transform: rotate(45deg); }
+.faq-a {
+  display: none; font-size: 13px; color: var(--body); line-height: 1.7;
+  padding-bottom: 16px;
+}
+.faq-item.open .faq-a { display: block; }
+
+/* ── QUIZ NUDGE ─────────────────────────────────── */
+.quiz-nudge {
+  background: var(--c1-bg); border: 0.5px solid var(--c1-bd);
+  border-radius: 14px; padding: 20px; margin-top: 48px;
+  display: flex; align-items: center; gap: 16px; transition: all .35s;
+}
+.nudge-icon {
+  width: 48px; height: 48px; border-radius: 14px; background: var(--c1);
+  color: #fff; font-size: 22px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .35s;
+}
+.nudge-text { flex: 1; }
+.nudge-title { font-size: 14px; font-weight: 700; color: var(--c1-tx); margin-bottom: 3px; transition: color .35s; }
+.nudge-sub   { font-size: 12px; color: var(--body); }
+.nudge-btn {
+  background: var(--c1); color: #fff; border: none; border-radius: 99px;
+  padding: 9px 18px; font-size: 12px; font-weight: 700;
+  font-family: 'Poppins', sans-serif; cursor: pointer; white-space: nowrap;
+  transition: opacity .15s, background .35s;
+}
+.nudge-btn:hover { opacity: .88; }
+
+/* ── STICKY BOTTOM BAR ──────────────────────────── */
+.sticky-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+  background: rgba(28,28,46,.96); backdrop-filter: blur(12px);
+  padding: 12px 20px; display: flex; align-items: center; gap: 14px;
+  border-top: 0.5px solid rgba(255,255,255,.1);
+}
+.sticky-info { flex: 1; min-width: 0; }
+.sticky-price { font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -.02em; }
+.sticky-orig  { font-size: 11px; color: rgba(255,255,255,.35); text-decoration: line-through; margin-left: 4px; }
+.sticky-seats { font-size: 11px; color: rgba(255,255,255,.45); margin-top: 1px; }
+.sticky-btn {
+  background: var(--c1); color: #fff; border: none; border-radius: 99px;
+  padding: 12px 24px; font-size: 14px; font-weight: 700;
+  font-family: 'Poppins', sans-serif; cursor: pointer;
+  transition: opacity .15s, background .35s; white-space: nowrap;
+}
+.sticky-btn:hover { opacity: .9; }
+
+/* ── FOOTER ─────────────────────────────────────── */
+.page-footer {
+  margin-top: 48px; padding: 20px;
+  text-align: center; border-top: 0.5px solid var(--border);
+  font-size: 11px; color: var(--body);
+}
+.page-footer a { color: var(--pink); text-decoration: none; font-weight: 600; }
+
+/* ── ANIMATIONS ─────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.section { animation: fadeUp .35s ease both; }
+
+@media (max-width: 540px) {
+  .persona-grid  { grid-template-columns: 1fr; }
+  .format-grid   { grid-template-columns: 1fr; }
+  .benefits-grid { grid-template-columns: 1fr; }
+  .quiz-nudge    { flex-direction: column; text-align: center; }
+  .nudge-btn     { width: 100%; }
+  .hero-stats    { flex-direction: column; align-items: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- DEMO BAR -->
+<div class="demo-bar">
+  <span class="demo-label">Prototype · ganti club:</span>
+  <div class="demo-btns">
+    <button class="demo-btn on"  onclick="show('singles')">💫 Singles Club</button>
+    <button class="demo-btn"     onclick="show('premarriage')">💍 Pre-Marriage Club</button>
+    <button class="demo-btn"     onclick="show('newlyweds')">🏡 Newlyweds Club</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="top-nav">
+  <a href="wmnlyfe-landing.html" style="text-decoration:none"><span class="nav-logo">WMNlyfe</span></a>
+  <span class="nav-club" id="navClub">Singles Club</span>
+  <button class="nav-back" onclick="history.back()">&#8592; Kembali</button>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="hero-bg-glyph" id="heroBg"></div>
+  <div class="hero-inner">
+    <div class="club-badge" id="clubBadge"></div>
+    <h1 class="hero-title" id="heroTitle"></h1>
+    <p class="hero-tagline" id="heroTagline"></p>
+
+    <div class="hero-stats" id="heroStats"></div>
+
+    <div class="spots-wrap">
+      <div class="spots-row">
+        <span class="spots-label" id="spotsLabel"></span>
+        <span class="spots-count" id="spotsCount"></span>
+      </div>
+      <div class="spots-track"><div class="spots-fill" id="spotsFill"></div></div>
+      <div class="spots-note" id="spotsNote"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE BODY -->
+<div class="page-body">
+
+  <!-- WHO IS THIS FOR -->
+  <div class="section" id="secWho">
+    <div class="sec-eyebrow">Untuk siapa?</div>
+    <h2 class="sec-title" id="whoTitle"></h2>
+    <p class="sec-sub"  id="whoSub"></p>
+    <div class="persona-grid" id="personaGrid"></div>
+    <div class="not-for" id="notFor"></div>
+  </div>
+
+  <div class="soft-div"></div>
+
+  <!-- CURRICULUM -->
+  <div class="section" id="secCurriculum">
+    <div class="sec-eyebrow">Kurikulum</div>
+    <h2 class="sec-title">5 modul yang akan kamu pelajari</h2>
+    <p class="sec-sub">Setiap modul dirancang untuk langsung bisa diterapkan, bukan sekadar teori.</p>
+    <div class="module-list" id="moduleList"></div>
+  </div>
+
+  <div class="soft-div"></div>
+
+  <!-- FORMAT -->
+  <div class="section" id="secFormat">
+    <div class="sec-eyebrow">Format &amp; Jadwal</div>
+    <h2 class="sec-title">Seperti apa program ini?</h2>
+    <div class="format-grid" id="formatGrid"></div>
+    <div class="timeline" id="timeline" style="margin-top:28px"></div>
+  </div>
+
+  <div class="soft-div"></div>
+
+  <!-- BENEFITS -->
+  <div class="section" id="secBenefits">
+    <div class="sec-eyebrow">Yang kamu dapatkan</div>
+    <h2 class="sec-title">Lebih dari sekadar konten</h2>
+    <div class="benefits-grid" id="benefitsGrid"></div>
+  </div>
+
+  <div class="soft-div"></div>
+
+  <!-- PRICING -->
+  <div class="section" id="secPricing">
+    <div class="sec-eyebrow">Investasi</div>
+    <h2 class="sec-title" style="margin-bottom:20px">Daftar sekarang, hemat lebih</h2>
+    <div class="pricing-card">
+      <div class="pricing-label">Membership Fee</div>
+      <div class="pricing-name" id="pricingName"></div>
+      <div class="early-tag" id="earlyTag">&#9201; Early Bird</div>
+      <div>
+        <span class="price-main" id="priceMain"></span>
+        <span class="price-orig" id="priceOrig"></span>
+      </div>
+      <div class="price-per">· sekali bayar untuk 1 batch (Sept–Des 2026)</div>
+      <div class="pricing-includes" id="pricingIncludes"></div>
+      <button class="btn-daftar" onclick="daftar()">Daftar via Google Form ↗</button>
+      <div class="pricing-deadline" id="pricingDeadline"></div>
+    </div>
+  </div>
+
+  <div class="soft-div"></div>
+
+  <!-- FAQ -->
+  <div class="section" id="secFaq">
+    <div class="sec-eyebrow">Pertanyaan Umum</div>
+    <h2 class="sec-title" style="margin-bottom:20px">FAQ</h2>
+    <div class="faq-list" id="faqList"></div>
+  </div>
+
+  <!-- QUIZ NUDGE -->
+  <div class="quiz-nudge" id="quizNudge">
+    <div class="nudge-icon">&#10067;</div>
+    <div class="nudge-text">
+      <div class="nudge-title">Belum tahu kamu tipe konflik apa?</div>
+      <div class="nudge-sub">Ikuti relationship assessment quiz gratis dulu — 5 menit, langsung dapat hasil</div>
+    </div>
+    <button class="nudge-btn" onclick="window.location.href='wmnlyfe-quiz.html'">Mulai Quiz Gratis</button>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="page-footer">
+    <div style="margin-bottom:8px">
+      <a href="wmnlyfe-landing.html">Halaman Utama</a> &nbsp;&#183;&nbsp;
+      <a href="#">Kontak WMNlyfe</a> &nbsp;&#183;&nbsp;
+      <a href="#">Kebijakan Privasi</a>
+    </div>
+    WMNlyfe &middot; Narasi TV &middot; 2026
+  </footer>
+</div>
+
+<!-- STICKY BAR -->
+<div class="sticky-bar">
+  <div class="sticky-info">
+    <div>
+      <span class="sticky-price" id="stickyPrice"></span>
+      <span class="sticky-orig"  id="stickyOrig"></span>
+    </div>
+    <div class="sticky-seats" id="stickySeats"></div>
+  </div>
+  <button class="sticky-btn" onclick="daftar()">Daftar via Form ↗</button>
+</div>
+
+<script>
+/* ─── CLUB DATA ──────────────────────────────────── */
+const CLUBS = {
+  singles: {
+    c1: '#7F77DD', c1bg: '#EEEDFE', c1bd: '#AFA9EC', c1tx: '#26215C',
+    badge: '💫 Singles Club',
+    bgGlyph: 'Single',
+    title: 'Pahami dirimu sebelum memulai hubungan berikutnya',
+    tagline: 'Club pertama di Indonesia yang membantu perempuan single memahami pola relasi, attachment style, dan cara mendatangi cinta dengan lebih sadar.',
+    stats: [
+      { icon: '&#128197;', val: 'Sept–Des 2026' },
+      { icon: '&#128101;', val: 'Maks. 20 anggota' },
+      { icon: '&#128187;', val: '5 Online + 1 Offline' }
+    ],
+    spotsTotal: 20, spotsTaken: 11,
+    spotsNote: 'Pendaftaran ditutup 31 Agustus 2026',
+    whoTitle: 'Club ini untuk kamu yang...',
+    whoSub: 'Sedang dalam fase single dan ingin menjadikannya kesempatan untuk tumbuh — bukan sekadar menunggu.',
+    personas: [
+      'Merasa punya pola hubungan yang sama terus berulang',
+      'Ingin memahami attachment style sebelum pacaran lagi',
+      'Sering tidak yakin apakah seseorang layak diperjuangkan',
+      'Ingin membangun diri yang utuh di luar status hubungan'
+    ],
+    notFor: ['Sedang dalam hubungan aktif (coba Pre-Marriage Club)', 'Mencari jodoh atau platform kencan'],
+    modules: [
+      {
+        name: 'Attachment Style & Akar Pola Relasi',
+        desc: 'Kenali gaya kemelekatan yang terbentuk sejak kecil dan bagaimana itu mempengaruhi caramu berhubungan hari ini.',
+        concepts: ['Secure', 'Anxious', 'Avoidant', 'Disorganized'],
+        note: 'Termasuk self-assessment dan diskusi kelompok tentang pola yang muncul di hubungan masa lalu.'
+      },
+      {
+        name: 'Boundaries yang Sehat',
+        desc: 'Belajar menetapkan dan menjaga batas yang sehat — dengan dirimu sendiri, orang-orang terdekat, dan calon pasangan.',
+        concepts: ['Batas emosional', 'Batas fisik', 'Komunikasi batas', 'Batas vs tembok'],
+        note: 'Banyak perempuan bingung membedakan boundaries yang sehat dengan ketertutupan. Modul ini membedakannya.'
+      },
+      {
+        name: 'Mengenali Red Flags (dan Green Flags)',
+        desc: 'Pelajari tanda-tanda yang perlu diwaspadai — baik dalam calon pasangan maupun dalam dirimu sendiri.',
+        concepts: ['Love bombing', 'Gaslighting', 'Konsistensi', 'Green flags nyata'],
+        note: 'Fokus pada red flags yang sering diabaikan karena terasa tidak "cukup serius" untuk dikhawatirkan.'
+      },
+      {
+        name: 'Intentional Dating',
+        desc: 'Kenali apa yang benar-benar kamu cari dalam hubungan dan cara mendatangi proses itu dengan kepala dan hati yang jernih.',
+        concepts: ['Nilai inti', 'Deal breakers', 'Ekspektasi realistis', 'Komunikasi awal'],
+        note: 'Termasuk latihan menulis "Relationship Vision" yang akan jadi panduan di proses pencarian.'
+      },
+      {
+        name: 'Membangun Diri di Luar Hubungan',
+        desc: 'Identitas, tujuan, dan kebahagiaan yang tidak bergantung pada status relasi.',
+        concepts: ['Identitas mandiri', 'Support system', 'Tujuan hidup', 'Self-compassion'],
+        note: 'Modul penutup yang paling banyak diminta — karena ini fondasinya.'
+      }
+    ],
+    formats: [
+      { icon: '&#128187;', label: 'Sesi online', val: '5 sesi via Zoom', note: '90 menit/sesi, bi-weekly' },
+      { icon: '&#127968;', label: 'Gathering offline', val: '1x di Jakarta', note: 'Akhir program, lokasi TBA' },
+      { icon: '&#128172;', label: 'WhatsApp Group', val: 'Private & seumur hidup', note: 'Akses komunitas setelah program' }
+    ],
+    timeline: [
+      { month: 'September', text: 'Kick-off & Modul 1: Attachment Style' },
+      { month: 'Oktober', text: 'Modul 2 & 3: Boundaries + Red Flags' },
+      { month: 'November', text: 'Modul 4 & 5: Dating + Identitas Diri' },
+      { month: 'Desember', text: 'Offline Gathering & Closing Ceremony' }
+    ],
+    benefits: [
+      { icon: '&#128218;', name: '5 Modul Eksklusif', desc: 'Materi yang dikurasi dari literatur psikologi relasi dan pengalaman fasilitator' },
+      { icon: '&#127909;', name: 'Rekaman Semua Sesi', desc: 'Akses rekaman setiap sesi, bisa ditonton ulang kapan saja' },
+      { icon: '&#128196;', name: 'PDF Workbook', desc: 'Workbook per modul untuk refleksi dan latihan mandiri' },
+      { icon: '&#128101;', name: 'Small Group Setting', desc: 'Maks. 20 anggota — lebih intim, lebih dalam, lebih aman' },
+      { icon: '&#127891;', name: 'Akses Fasilitator', desc: 'Sesi tanya jawab langsung dengan fasilitator terlatih' },
+      { icon: '&#9733;', name: 'Sertifikat Penyelesaian', desc: 'Sertifikat digital sebagai tanda kamu sudah menyelesaikan program' }
+    ],
+    price: 'Rp299.000', priceOrig: 'Rp399.000',
+    pricingName: 'Singles Club — Batch 1, 2026',
+    deadline: 'Harga early bird berlaku sampai 31 Agustus 2026',
+    spotsLeft: 9,
+    faqs: [
+      { q: 'Apakah sesi ini online atau offline?', a: '5 sesi dilakukan online via Zoom (90 menit per sesi, bi-weekly). Ada 1 sesi offline gathering di akhir program di Jakarta.' },
+      { q: 'Saya di luar Jakarta, bisa ikut?', a: 'Ya! Semua sesi utama online. Sesi offline bersifat opsional — jika tidak bisa hadir, ada alternatif online untuk sesi tersebut.' },
+      { q: 'Apakah saya harus sudah menjalani relationship assessment quiz?', a: 'Tidak wajib, tapi sangat direkomendasikan. Quiz gratis kami membantu kamu mengenal pola konflik sebelum memulai program ini.' },
+      { q: 'Apakah ada rekaman jika saya tidak bisa hadir satu sesi?', a: 'Semua sesi direkam dan diunggah ke folder eksklusif member dalam 24 jam setelah sesi berlangsung.' },
+      { q: 'Apakah ada refund?', a: 'Tidak ada refund setelah pembayaran dikonfirmasi. Namun jika ada halangan mendadak, kamu bisa pindah ke batch berikutnya dengan biaya admin Rp50.000.' }
+    ]
+  },
+
+  premarriage: {
+    c1: '#D4527B', c1bg: '#FBEAF0', c1bd: '#ED93B1', c1tx: '#4B1528',
+    badge: '💍 Pre-Marriage Club',
+    bgGlyph: 'Nikah',
+    title: 'Persiapan pernikahan jauh lebih dari sekadar hari H',
+    tagline: 'Club pertama di Indonesia yang membantu pasangan perempuan mempersiapkan kehidupan bersama secara mendalam — mulai dari komunikasi, keuangan, hingga peran masing-masing.',
+    stats: [
+      { icon: '&#128197;', val: 'Sept–Des 2026' },
+      { icon: '&#128101;', val: 'Maks. 20 anggota' },
+      { icon: '&#128187;', val: '5 Online + 1 Offline' }
+    ],
+    spotsTotal: 20, spotsTaken: 16,
+    spotsNote: 'Hanya tersisa 4 spot — pendaftaran ditutup 31 Agustus 2026',
+    whoTitle: 'Club ini untuk kamu yang...',
+    whoSub: 'Sudah bertunangan atau berencana menikah dalam 1–2 tahun ke depan, dan ingin mempersiapkan diri lebih dalam dari sekadar persiapan resepsi.',
+    personas: [
+      'Bertunangan atau berencana menikah dalam waktu dekat',
+      'Ingin bicara tentang hal penting sebelum menikah tapi tidak tahu mulai dari mana',
+      'Merasa ada topik besar yang belum pernah dibahas dengan calon pasangan',
+      'Ingin pernikahan yang kuat fondasinya, bukan hanya cantik di permukaannya'
+    ],
+    notFor: ['Belum punya rencana menikah dalam 2 tahun ke depan (coba Singles Club)', 'Mencari konseling pasangan (kami rekomendasikan psikolog)'],
+    modules: [
+      {
+        name: 'Compatibility Audit',
+        desc: 'Evaluasi mendalam tentang kecocokan nilai, visi hidup, dan gaya hidup kamu dan pasangan — sebelum terlambat.',
+        concepts: ['Nilai inti', 'Visi 10 tahun', 'Gaya hidup', 'Ekspektasi tersembunyi'],
+        note: 'Banyak pasangan asumsi mereka sudah tahu satu sama lain. Modul ini sering memunculkan hal yang belum pernah dibicarakan.'
+      },
+      {
+        name: 'Gaya Komunikasi & Fight Languages',
+        desc: 'Pahami cara kamu dan pasangan berkonflik — dan bangun sistem komunikasi yang lebih sehat bersama.',
+        concepts: ['Fight languages', 'Active listening', 'Repair attempts', 'Stonewalling'],
+        note: 'Dilengkapi latihan komunikasi yang bisa langsung dipraktikkan bersama pasangan di rumah.'
+      },
+      {
+        name: 'Peran di Masa Depan',
+        desc: 'Diskusi terbuka tentang pembagian peran domestik, karier, dan pengasuhan anak yang adil dan disepakati sebelum menikah.',
+        concepts: ['Pembagian kerja rumah', 'Karier vs keluarga', 'Parenting style', 'Peran keluarga besar'],
+        note: 'Topik yang paling sering dihindari karena "nanti saja dipikirkan" — padahal ini sumber konflik terbesar.'
+      },
+      {
+        name: 'Mencegah Resentment',
+        desc: 'Identifikasi benih-benih kekecewaan yang bisa tumbuh jadi masalah besar jika dibiarkan dalam pernikahan.',
+        concepts: ['Unmet expectations', 'Contempt cycle', 'Appreciation habits', 'Bids for connection'],
+        note: 'Berdasarkan riset Gottman Institute — dengan praktik langsung yang bisa dimulai hari ini.'
+      },
+      {
+        name: 'Financial Alignment',
+        desc: 'Menyatukan visi finansial: pengeluaran, tabungan, utang, dan tujuan jangka panjang sebagai pasangan.',
+        concepts: ['Financial values', 'Joint vs separate', 'Utang & aset', 'Tujuan finansial bersama'],
+        note: 'Uang adalah penyebab konflik nomor satu dalam pernikahan. Modul ini membantu kamu masuk ke pernikahan dengan sistem yang jelas.'
+      }
+    ],
+    formats: [
+      { icon: '&#128187;', label: 'Sesi online', val: '5 sesi via Zoom', note: '90 menit/sesi, bi-weekly' },
+      { icon: '&#127968;', label: 'Gathering offline', val: '1x di Jakarta', note: 'Pasangan diundang hadir' },
+      { icon: '&#128172;', label: 'WhatsApp Group', val: 'Private & seumur hidup', note: 'Komunitas sesama pasangan pra-nikah' }
+    ],
+    timeline: [
+      { month: 'September', text: 'Kick-off & Modul 1: Compatibility Audit' },
+      { month: 'Oktober', text: 'Modul 2 & 3: Komunikasi + Peran Masa Depan' },
+      { month: 'November', text: 'Modul 4 & 5: Resentment + Financial Alignment' },
+      { month: 'Desember', text: 'Offline Gathering dengan pasangan & Closing' }
+    ],
+    benefits: [
+      { icon: '&#128218;', name: '5 Modul Eksklusif', desc: 'Materi berbasis riset pernikahan dan konseling pra-nikah' },
+      { icon: '&#127909;', name: 'Rekaman Semua Sesi', desc: 'Akses rekaman dalam 24 jam setelah sesi berlangsung' },
+      { icon: '&#128196;', name: 'PDF Workbook Pasangan', desc: 'Workbook yang bisa dikerjakan bersama pasangan di rumah' },
+      { icon: '&#128101;', name: 'Small Group Setting', desc: 'Maks. 20 anggota — diskusi yang lebih jujur dan mendalam' },
+      { icon: '&#127891;', name: 'Akses Fasilitator', desc: 'Sesi Q&A langsung dengan fasilitator terlatih pra-nikah' },
+      { icon: '&#9733;', name: 'Sertifikat Penyelesaian', desc: 'Sertifikat digital penyelesaian program' }
+    ],
+    price: 'Rp299.000', priceOrig: 'Rp399.000',
+    pricingName: 'Pre-Marriage Club — Batch 1, 2026',
+    deadline: 'Harga early bird berlaku sampai 31 Agustus 2026 · Hanya 4 spot tersisa',
+    spotsLeft: 4,
+    faqs: [
+      { q: 'Apakah pasangan saya harus ikut juga?', a: 'Tidak. Club ini dirancang untuk kamu sebagai individu. Namun beberapa modul memiliki latihan yang bisa dikerjakan bersama pasangan di luar sesi.' },
+      { q: 'Apakah topiknya cocok untuk semua jenis pernikahan?', a: 'Ya. Modul dirancang untuk semua jenis latar belakang dan persiapan pernikahan — baik nikah sirri, pernikahan adat, maupun sipil.' },
+      { q: 'Apakah ada sesi konseling pribadi?', a: 'Club ini bukan pengganti konseling individual. Jika kamu membutuhkan konseling pasangan, kami bisa mereferensikan ke psikolog mitra kami.' },
+      { q: 'Bagaimana jika saya tidak jadi menikah selama program?', a: 'Materi yang kamu pelajari tetap relevan untuk hubungan di masa depan. Program tidak bisa di-refund, tapi kamu tetap mendapat nilai dari setiap modul.' },
+      { q: 'Apakah ada rekaman jika saya tidak bisa hadir?', a: 'Semua sesi direkam dan tersedia dalam 24 jam.' }
+    ]
+  },
+
+  newlyweds: {
+    c1: '#5DCAA5', c1bg: '#E1F5EE', c1bd: '#5DCAA5', c1tx: '#04342C',
+    badge: '🏡 Newlyweds Club',
+    bgGlyph: 'Baru',
+    title: 'Navigasi tahun-tahun awal pernikahan bersama orang yang paham',
+    tagline: 'Club untuk perempuan yang baru menikah dan sedang menemukan ritme kehidupan bersama — dengan semua kejutan, penyesuaian, dan keindahan yang datang bersamanya.',
+    stats: [
+      { icon: '&#128197;', val: 'Sept–Des 2026' },
+      { icon: '&#128101;', val: 'Maks. 20 anggota' },
+      { icon: '&#128187;', val: '5 Online + 1 Offline' }
+    ],
+    spotsTotal: 20, spotsTaken: 9,
+    spotsNote: 'Pendaftaran ditutup 31 Agustus 2026',
+    whoTitle: 'Club ini untuk kamu yang...',
+    whoSub: 'Menikah dalam 3 tahun terakhir dan sedang dalam proses menemukan keseimbangan — antara ekspektasi dan realita.',
+    personas: [
+      'Menikah dalam 1–3 tahun terakhir dan masih dalam fase penyesuaian',
+      'Merasa konflik mulai lebih sering dari yang diperkirakan sebelum menikah',
+      'Sedang belajar menyeimbangkan kehidupan sendiri, pasangan, dan keluarga besar',
+      'Ingin menjaga hubungan tetap kuat di tengah rutinitas dan tekanan kehidupan nyata'
+    ],
+    notFor: ['Menikah lebih dari 5 tahun (kebutuhan berbeda)', 'Dalam situasi pernikahan yang membutuhkan intervensi profesional — kami rekomendasikan psikolog'],
+    modules: [
+      {
+        name: 'Transisi Identitas Tahun Pertama',
+        desc: 'Navigasi perubahan identitas, ekspektasi, dan penyesuaian yang datang di awal pernikahan — yang sering tidak ada yang ceritakan sebelumnya.',
+        concepts: ['Identity shift', 'Ekspektasi vs realita', 'Grieving single life', 'Couple identity'],
+        note: 'Modul ini sering membuat anggota merasa "akhirnya ada yang mengerti" — karena banyak perasaan ini jarang dibicarakan.'
+      },
+      {
+        name: 'Keuangan Berdua',
+        desc: 'Setup sistem keuangan yang sehat sebagai pasangan: rekening, pengeluaran bersama, tabungan, dan perencanaan jangka panjang.',
+        concepts: ['Financial setup', 'Joint vs separate', 'Budgeting berdua', 'Tujuan 5 tahun'],
+        note: 'Disertai template spreadsheet keuangan pasangan yang langsung bisa dipakai.'
+      },
+      {
+        name: 'Intimacy & Conflict Repair',
+        desc: 'Membangun dan menjaga kedekatan emosional dan fisik — termasuk cara pulih dengan baik setelah konflik.',
+        concepts: ['Emotional intimacy', 'Repair setelah konflik', 'Love languages', 'Rupture & repair'],
+        note: 'Modul paling personal — sesi berlangsung dalam suasana yang aman dan tidak judgemental.'
+      },
+      {
+        name: 'Navigasi Keluarga Besar',
+        desc: 'Membangun boundaries yang sehat dengan keluarga masing-masing tanpa merusak hubungan yang sudah ada.',
+        concepts: ['In-law dynamics', 'Loyalitas vs boundaries', 'United front', 'Ekspektasi keluarga'],
+        note: 'Salah satu topik yang paling banyak diminta — karena hampir semua pasangan baru menghadapinya.'
+      },
+      {
+        name: 'Maintenance Relasi Jangka Panjang',
+        desc: 'Menjaga hubungan tetap hidup, bertumbuh, dan bermakna di tengah rutinitas dan tekanan sehari-hari.',
+        concepts: ['Gottman bids', 'Date night rituals', 'Appreciation habits', 'Visi bersama'],
+        note: 'Modul penutup yang jadi bekal untuk lima, sepuluh, dua puluh tahun ke depan.'
+      }
+    ],
+    formats: [
+      { icon: '&#128187;', label: 'Sesi online', val: '5 sesi via Zoom', note: '90 menit/sesi, bi-weekly' },
+      { icon: '&#127968;', label: 'Gathering offline', val: '1x di Jakarta', note: 'Suami/pasangan diundang' },
+      { icon: '&#128172;', label: 'WhatsApp Group', val: 'Private & seumur hidup', note: 'Komunitas sesama newlyweds' }
+    ],
+    timeline: [
+      { month: 'September', text: 'Kick-off & Modul 1: Transisi Identitas' },
+      { month: 'Oktober', text: 'Modul 2 & 3: Keuangan + Intimacy' },
+      { month: 'November', text: 'Modul 4 & 5: Keluarga Besar + Maintenance' },
+      { month: 'Desember', text: 'Offline Gathering & Community Celebration' }
+    ],
+    benefits: [
+      { icon: '&#128218;', name: '5 Modul Eksklusif', desc: 'Materi yang dikurasi dari literatur pernikahan dan pengalaman nyata' },
+      { icon: '&#127909;', name: 'Rekaman Semua Sesi', desc: 'Tersedia 24 jam setelah sesi untuk akses kapan saja' },
+      { icon: '&#128196;', name: 'PDF Workbook', desc: 'Workbook + template keuangan yang bisa langsung dipakai' },
+      { icon: '&#128101;', name: 'Small Group Setting', desc: 'Maks. 20 anggota untuk diskusi yang jujur dan intim' },
+      { icon: '&#127891;', name: 'Akses Fasilitator', desc: 'Sesi Q&A langsung dengan fasilitator terlatih' },
+      { icon: '&#9733;', name: 'Sertifikat Penyelesaian', desc: 'Sertifikat digital penyelesaian program' }
+    ],
+    price: 'Rp299.000', priceOrig: 'Rp399.000',
+    pricingName: 'Newlyweds Club — Batch 1, 2026',
+    deadline: 'Harga early bird berlaku sampai 31 Agustus 2026',
+    spotsLeft: 11,
+    faqs: [
+      { q: 'Apakah suami/pasangan saya harus ikut?', a: 'Tidak. Club ini untuk kamu sebagai individu. Namun suami/pasangan diundang ke sesi offline gathering di akhir program.' },
+      { q: 'Apakah cocok jika kami baru menikah 3 tahun?', a: 'Ya. Club ini cocok untuk pernikahan 0–3 tahun, karena tantangan di periode ini masih relatif serupa.' },
+      { q: 'Kami sudah punya anak, apakah masih relevan?', a: 'Sangat relevan. Justru kehadiran anak sering memperpadat tekanan di tahun awal pernikahan — modul kami mencakup dinamika ini.' },
+      { q: 'Apakah ada rekaman jika saya tidak bisa hadir?', a: 'Semua sesi direkam dan tersedia dalam 24 jam setelah sesi berlangsung.' },
+      { q: 'Apakah ada refund?', a: 'Tidak ada refund, tapi kamu bisa pindah ke batch berikutnya dengan biaya admin Rp50.000.' }
+    ]
+  }
+};
+
+/* ─── HELPERS ────────────────────────────────────── */
+function css(prop, val) {
+  document.documentElement.style.setProperty(prop, val);
+}
+
+/* ─── RENDER ──────────────────────────────────────── */
+function show(id) {
+  const D = CLUBS[id];
+
+  // Update CSS vars
+  css('--c1',    D.c1);
+  css('--c1-bg', D.c1bg);
+  css('--c1-bd', D.c1bd);
+  css('--c1-tx', D.c1tx);
+
+  // Demo btns
+  document.querySelectorAll('.demo-btn').forEach((b,i) => {
+    b.classList.toggle('on', ['singles','premarriage','newlyweds'][i] === id);
+  });
+
+  // Nav
+  document.getElementById('navClub').textContent = D.badge.replace(/^\S+\s/,'');
+
+  // Hero
+  document.getElementById('heroBg').textContent     = D.bgGlyph;
+  document.getElementById('clubBadge').innerHTML    = D.badge;
+  document.getElementById('heroTitle').textContent  = D.title;
+  document.getElementById('heroTagline').textContent= D.tagline;
+  document.getElementById('heroStats').innerHTML    = D.stats.map(s =>
+    `<div class="stat-pill">${s.icon} ${s.val}</div>`).join('');
+
+  // Spots
+  const pct = Math.round(D.spotsTaken / D.spotsTotal * 100);
+  document.getElementById('spotsLabel').textContent = `${D.spotsTaken} dari ${D.spotsTotal} spot terisi`;
+  document.getElementById('spotsCount').textContent = `${D.spotsLeft} tersisa`;
+  document.getElementById('spotsFill').style.width  = pct + '%';
+  document.getElementById('spotsNote').textContent  = D.spotsNote;
+
+  // Who
+  document.getElementById('whoTitle').textContent = D.whoTitle;
+  document.getElementById('whoSub').textContent   = D.whoSub;
+  document.getElementById('personaGrid').innerHTML = D.personas.map(p => `
+    <div class="persona-card">
+      <div class="persona-check">&#10003;</div>
+      <div class="persona-text">${p}</div>
+    </div>`).join('');
+  document.getElementById('notFor').innerHTML = `
+    <div class="not-for-label">Mungkin bukan untuk kamu jika...</div>
+    ${D.notFor.map(n => `<div class="not-item"><span class="not-x">&#215;</span>${n}</div>`).join('')}`;
+
+  // Modules
+  document.getElementById('moduleList').innerHTML = D.modules.map((m, i) => `
+    <div class="module-card" id="mod${i}">
+      <div class="module-header" onclick="toggleMod('mod${i}')">
+        <div class="module-num">${String(i+1).padStart(2,'0')}</div>
+        <div class="module-info">
+          <div class="module-name">${m.name}</div>
+          <div class="module-desc">${m.desc}</div>
+        </div>
+        <div class="module-toggle">&#43;</div>
+      </div>
+      <div class="module-body">
+        <div class="concept-chips">${m.concepts.map(c => `<span class="concept-chip">${c}</span>`).join('')}</div>
+        <div class="module-note">${m.note}</div>
+      </div>
+    </div>`).join('');
+
+  // Format
+  document.getElementById('formatGrid').innerHTML = D.formats.map(f => `
+    <div class="format-card">
+      <div class="format-icon">${f.icon}</div>
+      <div class="format-label">${f.label}</div>
+      <div class="format-value">${f.val}</div>
+      <div class="format-note">${f.note}</div>
+    </div>`).join('');
+
+  document.getElementById('timeline').innerHTML = D.timeline.map((t, i) => `
+    <div class="tl-item">
+      <div class="tl-dot">${i+1}</div>
+      <div class="tl-content">
+        <div class="tl-month">${t.month}</div>
+        <div class="tl-text">${t.text}</div>
+      </div>
+    </div>`).join('');
+
+  // Benefits
+  document.getElementById('benefitsGrid').innerHTML = D.benefits.map(b => `
+    <div class="benefit-card">
+      <div class="benefit-icon">${b.icon}</div>
+      <div class="benefit-name">${b.name}</div>
+      <div class="benefit-desc">${b.desc}</div>
+    </div>`).join('');
+
+  // Pricing
+  document.getElementById('pricingName').textContent  = D.pricingName;
+  document.getElementById('priceMain').textContent    = D.price;
+  document.getElementById('priceOrig').textContent    = D.priceOrig;
+  document.getElementById('pricingDeadline').textContent = D.deadline;
+  const items = ['5 modul eksklusif', 'Rekaman semua sesi', 'PDF workbook per modul', '1x offline gathering', 'Akses WhatsApp group seumur hidup', 'Sertifikat penyelesaian'];
+  document.getElementById('pricingIncludes').innerHTML = items.map(it =>
+    `<div class="pi-item"><div class="pi-check">&#10003;</div>${it}</div>`).join('');
+
+  // FAQ
+  document.getElementById('faqList').innerHTML = D.faqs.map((f, i) => `
+    <div class="faq-item" id="faq${i}">
+      <button class="faq-q" onclick="toggleFaq('faq${i}')">
+        <span class="faq-q-text">${f.q}</span>
+        <span class="faq-icon">&#43;</span>
+      </button>
+      <div class="faq-a">${f.a}</div>
+    </div>`).join('');
+
+  // Sticky bar
+  document.getElementById('stickyPrice').textContent = D.price;
+  document.getElementById('stickyOrig').textContent  = D.priceOrig;
+  document.getElementById('stickySeats').textContent = `${D.spotsLeft} spot tersisa · Early bird`;
+}
+
+/* ─── ACCORDION ──────────────────────────────────── */
+function toggleMod(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+function toggleFaq(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+/* ─── ACTIONS ─────────────────────────────────────── */
+function daftar() {
+  // Ganti URL ini dengan link Google Form pendaftaran club yang sebenarnya
+  window.open('https://forms.gle/GANTI_LINK_FORM_DI_SINI', '_blank');
+}
+
+/* ─── INIT ───────────────────────────────────────── */
+show('singles');
+// Open first module by default
+setTimeout(() => {
+  const first = document.getElementById('mod0');
+  if (first) first.classList.add('open');
+}, 100);
+</script>
+</body>
+</html>

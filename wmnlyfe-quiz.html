@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WMNlyfe — Relationship Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --pink:       #D4527B;
+  --pink-deep:  #4B1528;
+  --pink-mid:   #ED93B1;
+  --pink-light: #FBEAF0;
+  --cream:      #FAF7F4;
+  --dark:       #1C1C2E;
+  --body:       #5A5A7A;
+  --white:      #FFFFFF;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--cream);
+  color: var(--dark);
+  min-height: 100vh;
+}
+
+/* ── STICKY HEADER ─────────────────────────────── */
+.quiz-header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(250,247,244,.94);
+  backdrop-filter: blur(12px);
+  border-bottom: 0.5px solid #ED93B122;
+  padding: 14px 20px 10px;
+}
+.header-inner {
+  max-width: 620px; margin: 0 auto;
+}
+.header-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+}
+.logo { font-size: 15px; font-weight: 800; color: var(--pink); flex-shrink: 0; }
+.q-counter { margin-left: auto; font-size: 11px; color: var(--body); font-weight: 600; white-space: nowrap; }
+.back-btn {
+  background: none; border: 0.5px solid transparent; border-radius: 99px;
+  color: var(--body); cursor: pointer; font-family: 'Poppins', sans-serif;
+  font-size: 12px; font-weight: 500; padding: 5px 10px;
+  display: flex; align-items: center; gap: 4px; transition: all .15s;
+}
+.back-btn:hover:not(:disabled) { border-color: var(--pink-mid); color: var(--pink); background: var(--pink-light); }
+.back-btn:disabled { opacity: .28; cursor: default; }
+.progress-track {
+  height: 3px; background: #ED93B122; border-radius: 99px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; background: var(--pink); border-radius: 99px;
+  transition: width .45s cubic-bezier(.4,0,.2,1);
+}
+
+/* ── MAIN ──────────────────────────────────────── */
+.quiz-wrap {
+  max-width: 620px; margin: 0 auto;
+  padding: 96px 20px 60px;
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+}
+
+/* ── QUESTION SCREEN ───────────────────────────── */
+.q-screen { display: flex; flex-direction: column; }
+.cat-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--pink-light); border: 0.5px solid var(--pink-mid);
+  color: var(--pink); border-radius: 99px; padding: 4px 12px;
+  font-size: 10px; font-weight: 600; letter-spacing: .06em;
+  text-transform: uppercase; margin-bottom: 18px; align-self: flex-start;
+}
+.q-text {
+  font-size: clamp(17px, 2.4vw, 21px); font-weight: 700; line-height: 1.45;
+  color: var(--dark); letter-spacing: -.015em; margin-bottom: 28px;
+}
+.opts-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 11px;
+}
+.opt {
+  background: var(--white); border: 1.5px solid #ED93B128;
+  border-radius: 12px; padding: 16px 14px; cursor: pointer;
+  font-family: 'Poppins', sans-serif; text-align: left;
+  display: flex; flex-direction: column; gap: 7px;
+  transition: border-color .15s, background .15s, transform .15s, opacity .2s;
+  position: relative;
+}
+.opt:hover:not(.sel):not(.dim) {
+  border-color: var(--pink-mid); background: var(--pink-light);
+  transform: translateY(-2px);
+}
+.opt.sel {
+  background: var(--pink); border-color: var(--pink);
+  transform: scale(1.02);
+}
+.opt.dim { opacity: .38; pointer-events: none; }
+.opt-letter {
+  width: 26px; height: 26px; border-radius: 7px; flex-shrink: 0;
+  background: var(--pink-light); color: var(--pink);
+  font-size: 11px; font-weight: 700; font-family: 'Poppins', sans-serif;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s, color .15s;
+}
+.opt.sel .opt-letter { background: rgba(255,255,255,.22); color: var(--white); }
+.opt-text {
+  font-size: 13px; color: var(--dark); line-height: 1.5; font-weight: 400;
+  transition: color .15s;
+}
+.opt.sel .opt-text { color: var(--white); }
+.opt-check {
+  position: absolute; top: 10px; right: 12px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: rgba(255,255,255,.25);
+  font-size: 11px; color: var(--white); font-weight: 700;
+  display: none; align-items: center; justify-content: center;
+}
+.opt.sel .opt-check { display: flex; }
+
+/* ── ANIMATIONS ────────────────────────────────── */
+@keyframes fromRight {
+  from { opacity: 0; transform: translateX(52px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes fromLeft {
+  from { opacity: 0; transform: translateX(-52px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes popIn {
+  from { opacity: 0; transform: scale(.93) translateY(16px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.anim-right { animation: fromRight .3s cubic-bezier(.2,0,.3,1) both; }
+.anim-left  { animation: fromLeft  .3s cubic-bezier(.2,0,.3,1) both; }
+.anim-pop   { animation: popIn .45s cubic-bezier(.2,0,.2,1) both; }
+.anim-up    { animation: fadeUp .35s ease both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-right, .anim-left, .anim-pop, .anim-up { animation: none; }
+}
+
+/* ── RESULTS ───────────────────────────────────── */
+.result-wrap { display: flex; flex-direction: column; gap: 20px; }
+.result-kicker {
+  text-align: center;
+  font-size: 11px; font-weight: 600; color: var(--pink); letter-spacing: .08em;
+  text-transform: uppercase; margin-bottom: 5px;
+}
+.result-headline {
+  text-align: center;
+  font-size: 22px; font-weight: 800; color: var(--dark); letter-spacing: -.02em;
+}
+
+.arch-card {
+  border-radius: 16px; padding: 28px 24px; text-align: center;
+  border: 1.5px solid; position: relative;
+}
+.arch-emoji { font-size: 52px; display: block; margin-bottom: 14px; }
+.arch-name  { font-size: 26px; font-weight: 800; letter-spacing: -.025em; margin-bottom: 4px; }
+.arch-sub   { font-size: 11px; font-weight: 600; opacity: .55; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 16px; }
+.arch-tagline { font-size: 14px; font-weight: 500; line-height: 1.68; opacity: .82; max-width: 380px; margin: 0 auto; }
+
+.section-label {
+  font-size: 10px; font-weight: 600; color: var(--body); text-transform: uppercase;
+  letter-spacing: .09em; margin-bottom: 10px;
+}
+.trait-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: var(--white); border: 0.5px solid #1C1C2E0F;
+  border-radius: 10px; padding: 12px 14px; margin-bottom: 8px;
+}
+.trait-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pink); flex-shrink: 0; margin-top: 5px; }
+.trait-text { font-size: 13px; color: var(--dark); line-height: 1.55; }
+
+/* Paid/locked preview */
+.locked-wrap { border-radius: 14px; position: relative; overflow: hidden; }
+.locked-inner {
+  padding: 16px 18px;
+  background: var(--white); border: 0.5px solid #1C1C2E0F; border-radius: 14px;
+  filter: blur(6px); user-select: none; pointer-events: none;
+}
+.locked-row { height: 20px; border-radius: 4px; background: #e0dada; margin-bottom: 10px; }
+.locked-overlay {
+  position: absolute; inset: 0;
+  background: rgba(250,247,244,.68);
+  backdrop-filter: blur(2px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 7px; padding: 20px;
+}
+.lock-glyph { font-size: 22px; }
+.locked-title { font-size: 14px; font-weight: 700; color: var(--dark); text-align: center; }
+.locked-sub   { font-size: 11px; color: var(--body); text-align: center; }
+
+/* CTAs */
+.cta-stack { display: flex; flex-direction: column; gap: 10px; }
+.btn-main {
+  width: 100%; background: var(--pink); color: var(--white);
+  border: none; border-radius: 99px; padding: 15px 24px;
+  font-size: 15px; font-weight: 700; font-family: 'Poppins', sans-serif;
+  cursor: pointer; transition: opacity .15s; letter-spacing: -.01em;
+}
+.btn-main:hover { opacity: .88; }
+.btn-dark {
+  width: 100%; background: var(--dark); color: var(--white);
+  border: none; border-radius: 99px; padding: 14px 24px;
+  font-size: 14px; font-weight: 600; font-family: 'Poppins', sans-serif;
+  cursor: pointer; transition: opacity .15s;
+}
+.btn-dark:hover { opacity: .84; }
+.btn-ghost {
+  width: 100%; background: transparent; color: var(--pink);
+  border: 1.5px solid var(--pink); border-radius: 99px;
+  padding: 13px 24px; font-size: 14px; font-weight: 600;
+  font-family: 'Poppins', sans-serif; cursor: pointer;
+  transition: background .15s;
+}
+.btn-ghost:hover { background: var(--pink-light); }
+
+/* Share toast */
+.toast {
+  position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+  background: var(--dark); color: var(--white); border-radius: 99px;
+  padding: 11px 24px; font-size: 13px; font-weight: 500; white-space: nowrap;
+  opacity: 0; transition: opacity .25s; pointer-events: none; z-index: 999;
+}
+.toast.show { opacity: 1; }
+
+@media (max-width: 500px) {
+  .opts-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="quiz-header">
+  <div class="header-inner">
+    <div class="header-row">
+      <a href="wmnlyfe-landing.html" style="text-decoration:none"><span class="logo">WMNlyfe</span></a>
+      <button class="back-btn" id="backBtn" onclick="goBack()">&#8592; Kembali</button>
+      <span class="q-counter" id="qCounter">1 dari 10</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:5%"></div>
+    </div>
+  </div>
+</div>
+
+<div class="quiz-wrap" id="quizWrap"></div>
+<div class="toast" id="toast">Link disalin! Bagikan ke teman-temanmu ✓</div>
+
+<script>
+/* ─── DATA ───────────────────────────────────────── */
+const Qs = [
+  {
+    cat: "Respons awal",
+    text: "Pasanganmu membatalkan rencana kalian di menit terakhir tanpa alasan yang jelas. Yang pertama kali kamu lakukan...",
+    opts: [
+      { l:"A", t:"Bilang 'tidak apa-apa' meski dalam hati kecewa", v:"A" },
+      { l:"B", t:"Langsung tanya kenapa dan ungkapkan kekecewaanmu", v:"B" },
+      { l:"C", t:"Diam dan memendam rasa kecewa itu sendirian", v:"C" },
+      { l:"D", t:"Curhat ke sahabat dulu untuk mengolah perasaan", v:"D" }
+    ]
+  },
+  {
+    cat: "Respons awal",
+    text: "Saat ada sesuatu yang mengganggu dalam hubunganmu, kamu cenderung...",
+    opts: [
+      { l:"A", t:"Berharap masalah itu hilang sendiri tanpa perlu dibahas", v:"A" },
+      { l:"B", t:"Angkat bicara secepat mungkin agar tidak berlarut-larut", v:"B" },
+      { l:"C", t:"Menunggu momen yang 'tepat' untuk membicarakannya", v:"C" },
+      { l:"D", t:"Menulis atau menyusun pikiranmu dulu sebelum bicara", v:"D" }
+    ]
+  },
+  {
+    cat: "Ekspresi diri",
+    text: "Ketika kamu marah atau kecewa, orang-orang di sekitarmu biasanya...",
+    opts: [
+      { l:"A", t:"Tidak tahu kamu sedang marah — kamu tidak memperlihatkannya", v:"A" },
+      { l:"B", t:"Langsung tahu karena ekspresi dan nada bicaramu berubah", v:"B" },
+      { l:"C", t:"Bisa merasakannya, tapi kamu tidak pernah mengatakannya", v:"C" },
+      { l:"D", t:"Tahu karena kamu minta ruang diam untuk berpikir", v:"D" }
+    ]
+  },
+  {
+    cat: "Saat konflik",
+    text: "Di tengah pertengkaran yang panas, kamu cenderung...",
+    opts: [
+      { l:"A", t:"Mengalah untuk menghindari eskalasi, meski tidak setuju", v:"A" },
+      { l:"B", t:"Mempertahankan pendapatmu sampai ada kejelasan", v:"B" },
+      { l:"C", t:"Menarik diri dan butuh waktu sendiri untuk berpikir", v:"C" },
+      { l:"D", t:"Fokus mencari solusi, bukan mencari siapa yang salah", v:"D" }
+    ]
+  },
+  {
+    cat: "Saat konflik",
+    text: "Ketika pasangan mengangkat masalah yang tidak ingin kamu bahas, kamu...",
+    opts: [
+      { l:"A", t:"Mengalihkan topik atau mencairkan suasana dengan humor", v:"A" },
+      { l:"B", t:"Menghadapinya langsung, meski terasa berat", v:"B" },
+      { l:"C", t:"Merespons singkat, tapi banyak yang tersimpan dalam hati", v:"C" },
+      { l:"D", t:"Minta waktu jeda dan berjanji membahasnya dengan tenang nanti", v:"D" }
+    ]
+  },
+  {
+    cat: "Ekspresi diri",
+    text: "Nada suara dan cara bicaramu saat berkonflik biasanya...",
+    opts: [
+      { l:"A", t:"Tetap tenang dan datar, meski kamu sedang sangat kecewa", v:"A" },
+      { l:"B", t:"Naik — kamu tidak bisa menyembunyikan intensitas perasaanmu", v:"B" },
+      { l:"C", t:"Terputus-putus karena kamu memilih kata dengan sangat hati-hati", v:"C" },
+      { l:"D", t:"Menjadi lebih formal dan terstruktur dari biasanya", v:"D" }
+    ]
+  },
+  {
+    cat: "Setelah konflik",
+    text: "Setelah pertengkaran yang besar, kamu...",
+    opts: [
+      { l:"A", t:"Bisa kembali normal seolah tidak terjadi apa-apa", v:"A" },
+      { l:"B", t:"Ingin segera berdamai dan bicara tuntas sebelum tidur", v:"B" },
+      { l:"C", t:"Butuh waktu sendirian, baru bisa reconnect setelah itu", v:"C" },
+      { l:"D", t:"Mengevaluasi apa yang terjadi dan apa yang bisa dipelajari", v:"D" }
+    ]
+  },
+  {
+    cat: "Setelah konflik",
+    text: "Jika masalah belum tuntas dibicarakan, kamu...",
+    opts: [
+      { l:"A", t:"Bisa melupakan dan melanjutkan hidup tanpa resolusi yang jelas", v:"A" },
+      { l:"B", t:"Tidak bisa tenang sampai ada kejelasan antara kalian", v:"B" },
+      { l:"C", t:"Terus memikirkannya tapi tidak mengangkatnya kembali", v:"C" },
+      { l:"D", t:"Menunggu kondisi lebih tenang untuk membahasnya ulang", v:"D" }
+    ]
+  },
+  {
+    cat: "Pola jangka panjang",
+    text: "Dalam hubungan jangka panjang, hal yang paling sering kamu sesali adalah...",
+    opts: [
+      { l:"A", t:"Terlalu banyak mengalah sampai kehilangan dirimu sendiri", v:"A" },
+      { l:"B", t:"Terlalu blak-blakan sampai kadang menyakiti tanpa sengaja", v:"B" },
+      { l:"C", t:"Terlalu banyak memendam perasaan sampai meledak di waktu yang salah", v:"C" },
+      { l:"D", t:"Terlalu fokus solusi sampai lupa memvalidasi perasaan pasangan", v:"D" }
+    ]
+  },
+  {
+    cat: "Pola jangka panjang",
+    text: "Kalau pasanganmu menggambarkan cara kamu berkonflik dalam satu kata, kemungkinan besar mereka akan berkata...",
+    opts: [
+      { l:"A", t:"'Menghindari' — kamu lebih suka damai daripada benar", v:"A" },
+      { l:"B", t:"'Frontal' — kamu tidak takut konfrontasi langsung", v:"B" },
+      { l:"C", t:"'Memendam' — emosimu terlihat tenang dari luar", v:"C" },
+      { l:"D", t:"'Analitis' — kamu selalu mencari akar masalahnya", v:"D" }
+    ]
+  }
+];
+
+const ARCH = {
+  A: {
+    name:"Si Penjaga Damai", sub:"Conflict Avoider", emoji:"🕊️",
+    tagline:"Harmoni adalah hal yang paling kamu jaga — bahkan saat itu mengharuskanmu menelan perasaanmu sendiri.",
+    traits:[
+      "Sangat sensitif terhadap ketegangan dan pergeseran suasana di sekitarmu",
+      "Pandai menjaga keadaan tetap tenang dan relasi tetap nyaman",
+      "Sering mengalah demi hubungan, tapi kebutuhanmu kadang tidak pernah tersampaikan"
+    ],
+    bg:"#EEEDFE", bd:"#AFA9EC", tx:"#26215C"
+  },
+  B: {
+    name:"Si Petarung Jujur", sub:"Direct Confronter", emoji:"🔥",
+    tagline:"Kejujuran adalah bahasa cintamu — bahkan ketika itu berarti percakapan yang tidak nyaman.",
+    traits:[
+      "Berani mengangkat masalah secara langsung tanpa menunda-nunda",
+      "Tidak nyaman membiarkan ketegangan terpendam terlalu lama",
+      "Resolusi yang cepat dan jelas lebih penting bagimu dari kenyamanan sesaat"
+    ],
+    bg:"#FBEAF0", bd:"#ED93B1", tx:"#4B1528"
+  },
+  C: {
+    name:"Si Pemikir Dalam", sub:"Silent Processor", emoji:"🌊",
+    tagline:"Pikiranmu dalam dan kaya, tapi kata-katamu sering tertahan — membuat orang terdekatmu bertanya-tanya.",
+    traits:[
+      "Memproses emosi secara internal sebelum bisa mengungkapkannya",
+      "Perlu ruang dan waktu untuk merumuskan apa yang sebenarnya kamu rasakan",
+      "Kadang terlihat baik-baik saja di luar, padahal banyak yang masih tersimpan di dalam"
+    ],
+    bg:"#E1F5EE", bd:"#5DCAA5", tx:"#04342C"
+  },
+  D: {
+    name:"Si Perancang Bijak", sub:"Rational Analyzer", emoji:"🧭",
+    tagline:"Kamu percaya setiap konflik punya solusi — tapi perasaan juga butuh ruangnya sendiri untuk didengar.",
+    traits:[
+      "Memisahkan emosi dan logika saat menghadapi masalah dalam hubungan",
+      "Fokus pada solusi dan pelajaran yang bisa diambil dari setiap konflik",
+      "Kadang lupa memvalidasi perasaan pasangan sebelum bergerak ke tahap solusi"
+    ],
+    bg:"#FAEEDA", bd:"#EF9F27", tx:"#412402"
+  }
+};
+
+/* ─── STATE ──────────────────────────────────────── */
+let cur = 0;
+let ans = new Array(Qs.length).fill(null);
+let dir = 1;
+let timer = null;
+let done = false;
+
+/* ─── RENDER ─────────────────────────────────────── */
+function render() {
+  if (done) { renderResults(); return; }
+
+  const q   = Qs[cur];
+  const sel = ans[cur];
+  const pct = Math.max(Math.round((cur / Qs.length) * 100), 5);
+  const cls = dir >= 0 ? 'anim-right' : 'anim-left';
+
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('qCounter').textContent = `${cur + 1} dari ${Qs.length}`;
+  document.getElementById('backBtn').disabled = cur === 0;
+
+  document.getElementById('quizWrap').innerHTML = `
+    <div class="q-screen ${cls}">
+      <span class="cat-tag">${q.cat}</span>
+      <p class="q-text">${q.text}</p>
+      <div class="opts-grid">
+        ${q.opts.map(o => {
+          const isSel = sel === o.v;
+          const isDim = sel && !isSel;
+          return `<button class="opt${isSel?' sel':''}${isDim?' dim':''}" onclick="pick('${o.v}')">
+            <div class="opt-letter">${o.l}</div>
+            <div class="opt-text">${o.t}</div>
+            <div class="opt-check">&#10003;</div>
+          </button>`;
+        }).join('')}
+      </div>
+    </div>`;
+}
+
+function renderResults() {
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('qCounter').textContent = 'Selesai!';
+  document.getElementById('backBtn').disabled = true;
+
+  const counts = {A:0,B:0,C:0,D:0};
+  ans.forEach(a => { if(a) counts[a]++; });
+  const winner = Object.entries(counts).sort((a,b)=>b[1]-a[1])[0][0];
+  const a = ARCH[winner];
+
+  document.getElementById('quizWrap').innerHTML = `
+    <div class="result-wrap anim-pop">
+
+      <div>
+        <p class="result-kicker">Hasilmu sudah siap</p>
+        <h2 class="result-headline">Kamu adalah...</h2>
+      </div>
+
+      <div class="arch-card anim-pop" style="background:${a.bg};border-color:${a.bd};color:${a.tx}">
+        <span class="arch-emoji">${a.emoji}</span>
+        <div class="arch-name">${a.name}</div>
+        <div class="arch-sub">${a.sub}</div>
+        <p class="arch-tagline">${a.tagline}</p>
+      </div>
+
+      <div class="anim-up" style="animation-delay:.1s">
+        <div class="section-label">Tanda-tanda kamu tipe ini</div>
+        ${a.traits.map(t=>`
+          <div class="trait-item">
+            <div class="trait-dot"></div>
+            <div class="trait-text">${t}</div>
+          </div>`).join('')}
+      </div>
+
+      <div class="anim-up" style="animation-delay:.2s">
+        <div class="section-label" style="margin-bottom:10px">Analisis lengkap</div>
+        <div class="locked-wrap">
+          <div class="locked-inner" aria-hidden="true">
+            <div class="locked-row" style="width:90%"></div>
+            <div class="locked-row" style="width:70%"></div>
+            <div class="locked-row" style="width:55%"></div>
+            <div class="locked-row" style="width:80%;margin-bottom:0"></div>
+          </div>
+          <div class="locked-overlay">
+            <div class="lock-glyph">&#128274;</div>
+            <div class="locked-title">Lihat analisis mendalam & archetype pasangan idealmu</div>
+            <div class="locked-sub">Dikirim via email atau WhatsApp setelah pembayaran</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cta-stack anim-up" style="animation-delay:.3s">
+        <button class="btn-main" onclick="goToPay()">Lihat Hasil Lengkap &#8594;</button>
+        <button class="btn-dark" onclick="window.location.href='wmnlyfe-free-results.html'">Bagikan Hasilku ke Teman</button>
+        <button class="btn-ghost" onclick="joinCommunity()">Gabung Community Gratis</button>
+      </div>
+
+      <p style="font-size:11px;color:var(--body);text-align:center">
+        WMNlyfe &middot; Narasi TV &middot; 2026
+      </p>
+    </div>`;
+}
+
+/* ─── ACTIONS ────────────────────────────────────── */
+function pick(v) {
+  if (ans[cur]) return;
+  ans[cur] = v;
+  render();
+  timer = setTimeout(() => {
+    dir = 1;
+    if (cur < Qs.length - 1) { cur++; render(); }
+    else { done = true; renderResults(); }
+  }, 720);
+}
+
+function goBack() {
+  if (cur === 0) return;
+  clearTimeout(timer);
+  dir = -1; cur--;
+  render();
+}
+
+function shareResult() {
+  navigator.clipboard.writeText(window.location.href).catch(()=>{});
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2800);
+}
+function goToPay()       { window.location.href = 'wmnlyfe-payment.html'; }
+function joinCommunity() { window.location.href = 'wmnlyfe-free-results.html'; }
+
+/* ─── INIT ───────────────────────────────────────── */
+render();
+</script>
+</body>
+</html>

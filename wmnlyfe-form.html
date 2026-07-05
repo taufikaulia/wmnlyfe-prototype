@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WMNlyfe — Profil Kamu</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --pink:        #D4527B;
+  --pink-deep:   #4B1528;
+  --pink-mid:    #ED93B1;
+  --pink-light:  #FBEAF0;
+  --cream:       #FAF7F4;
+  --dark:        #1C1C2E;
+  --body:        #5A5A7A;
+  --white:       #FFFFFF;
+  --teal:        #5DCAA5;
+  --teal-bg:     #E1F5EE;
+  --teal-dark:   #04342C;
+  --amber:       #EF9F27;
+  --amber-bg:    #FAEEDA;
+  --amber-dark:  #412402;
+  --purple-bg:   #EEEDFE;
+  --purple-bd:   #AFA9EC;
+  --purple-dark: #26215C;
+  --border:      #E8E3DF;
+  --err:         #C0392B;
+  --err-bg:      #FFF0EE;
+  --r:           10px;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--cream);
+  color: var(--dark);
+  min-height: 100vh;
+}
+
+/* ── STICKY NAV ──────────────────────────────── */
+.top-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(250,247,244,.94); backdrop-filter: blur(12px);
+  border-bottom: 0.5px solid #ED93B122;
+  padding: 12px 20px;
+  display: flex; align-items: center; gap: 16px;
+}
+.nav-logo { font-size: 15px; font-weight: 800; color: var(--pink); flex-shrink: 0; }
+
+.step-track {
+  display: flex; align-items: center; gap: 0;
+  margin-left: auto;
+}
+.step-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 600; padding: 5px 10px;
+  border-radius: 99px; white-space: nowrap;
+  transition: all .2s;
+}
+.step-item.active { background: var(--pink-light); color: var(--pink); }
+.step-item.done   { color: var(--teal); }
+.step-item.future { color: #C4BAB6; }
+.step-num {
+  width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0;
+  font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.step-item.active .step-num  { background: var(--pink); color: var(--white); }
+.step-item.done   .step-num  { background: var(--teal); color: var(--white); }
+.step-item.future .step-num  { background: #E8E3DF; color: #A09890; }
+.step-connector { width: 20px; height: 0.5px; background: var(--border); flex-shrink: 0; }
+
+/* ── HEADER ──────────────────────────────────── */
+.page-header {
+  text-align: center; padding: 40px 20px 8px; max-width: 560px; margin: 0 auto;
+}
+.header-eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--pink-light); border: 0.5px solid var(--pink-mid);
+  border-radius: 99px; padding: 4px 14px;
+  font-size: 10px; font-weight: 600; color: var(--pink);
+  letter-spacing: .07em; text-transform: uppercase; margin-bottom: 16px;
+}
+.header-title {
+  font-size: clamp(22px, 4vw, 30px); font-weight: 800;
+  color: var(--dark); line-height: 1.2; letter-spacing: -.025em; margin-bottom: 10px;
+}
+.header-sub {
+  font-size: 13px; color: var(--body); line-height: 1.7;
+}
+.header-pills {
+  display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 12px;
+}
+.header-pill {
+  background: var(--white); border: 0.5px solid var(--border); border-radius: 99px;
+  padding: 4px 12px; font-size: 11px; color: var(--body); font-weight: 500;
+}
+
+/* ── FORM WRAPPER ────────────────────────────── */
+.form-wrap {
+  max-width: 520px; margin: 32px auto 60px; padding: 0 20px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+
+/* ── QUESTION CARDS ──────────────────────────── */
+.q-card {
+  background: var(--white); border: 0.5px solid var(--border);
+  border-radius: 14px; padding: 20px 20px 18px;
+  transition: border-color .15s, box-shadow .15s;
+}
+.q-card:focus-within {
+  border-color: var(--pink-mid);
+  box-shadow: 0 0 0 3px #D4527B12;
+}
+.q-label {
+  font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px;
+  display: flex; align-items: center; gap: 8px;
+}
+.q-num {
+  width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0;
+  background: var(--pink-light); color: var(--pink);
+  font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center;
+}
+.q-hint { font-size: 11px; color: var(--body); margin-bottom: 12px; padding-left: 30px; }
+
+/* ── BASE INPUT ──────────────────────────────── */
+.f-input {
+  width: 100%; background: var(--cream); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 12px 14px;
+  font-size: 14px; color: var(--dark); font-family: 'Poppins', sans-serif;
+  outline: none; transition: border-color .15s, background .15s;
+  appearance: none;
+}
+.f-input::placeholder { color: #BDB3AD; }
+.f-input:focus { border-color: var(--pink-mid); background: var(--white); }
+.f-input.err   { border-color: var(--err); background: var(--err-bg); }
+.f-input.ok    { border-color: var(--teal); }
+
+.err-msg {
+  font-size: 11px; color: var(--err); margin-top: 6px; padding-left: 2px;
+  display: none;
+}
+.err-msg.show { display: block; }
+
+/* ── TWO-COL ROW ─────────────────────────────── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* ── AGE STEPPER ─────────────────────────────── */
+.stepper {
+  display: flex; align-items: center; gap: 0;
+  border: 1px solid var(--border); border-radius: var(--r);
+  overflow: hidden; background: var(--cream);
+}
+.stepper-btn {
+  width: 44px; height: 48px; flex-shrink: 0;
+  background: none; border: none; cursor: pointer;
+  font-size: 18px; color: var(--body); font-family: 'Poppins', sans-serif;
+  transition: background .12s, color .12s;
+  display: flex; align-items: center; justify-content: center;
+}
+.stepper-btn:hover { background: var(--pink-light); color: var(--pink); }
+.stepper-btn:active { background: var(--pink); color: var(--white); }
+.stepper-val {
+  flex: 1; text-align: center; font-size: 16px; font-weight: 700;
+  color: var(--dark); border: none; background: none; outline: none;
+  font-family: 'Poppins', sans-serif;
+}
+.stepper.err { border-color: var(--err); background: var(--err-bg); }
+.stepper.ok  { border-color: var(--teal); }
+
+/* ── GENDER PILLS ────────────────────────────── */
+.gender-pills {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.gender-pill {
+  flex: 1; min-width: 100px;
+  background: var(--cream); border: 1.5px solid var(--border);
+  border-radius: var(--r); padding: 10px 12px;
+  font-size: 13px; font-weight: 500; color: var(--body);
+  font-family: 'Poppins', sans-serif; cursor: pointer;
+  transition: all .15s; text-align: center;
+}
+.gender-pill:hover { border-color: var(--pink-mid); color: var(--pink); background: var(--pink-light); }
+.gender-pill.sel  { background: var(--pink); border-color: var(--pink); color: var(--white); font-weight: 600; }
+
+/* ── RELATIONSHIP STATUS CARDS ───────────────── */
+.status-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+}
+.status-card {
+  border: 1.5px solid var(--border); border-radius: 12px;
+  padding: 16px 14px; cursor: pointer;
+  transition: all .18s; text-align: center;
+  background: var(--cream); position: relative;
+}
+.status-card:hover:not(.sel) {
+  border-color: var(--pink-mid); background: var(--pink-light);
+  transform: translateY(-2px);
+}
+.status-card.sel {
+  border-color: var(--pink); background: var(--pink-light);
+  box-shadow: 0 0 0 3px #D4527B18;
+}
+.status-card.sel::after {
+  content: "✓";
+  position: absolute; top: 8px; right: 10px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--pink); color: var(--white);
+  font-size: 10px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Poppins', sans-serif;
+  /* pseudo-elements with content need display:flex workaround */
+  line-height: 18px; text-align: center;
+}
+.status-icon { font-size: 26px; margin-bottom: 8px; display: block; }
+.status-name { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 3px; }
+.status-card.sel .status-name { color: var(--pink-deep); }
+.status-desc { font-size: 11px; color: var(--body); line-height: 1.4; }
+.status-card.sel .status-desc { color: var(--pink); }
+
+/* Personalization hint */
+.club-hint {
+  border-radius: 10px; padding: 12px 14px;
+  margin-top: 10px; display: none;
+  font-size: 12px; font-weight: 500; line-height: 1.5;
+  border: 0.5px solid; align-items: flex-start; gap: 8px;
+}
+.club-hint.show { display: flex; }
+.club-hint-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 3px;
+}
+.club-hint-text { color: inherit; }
+.club-hint-text strong { display: block; font-weight: 700; margin-bottom: 1px; }
+
+/* ── CONTACT SECTION ─────────────────────────── */
+.contact-row { display: flex; flex-direction: column; gap: 10px; }
+.opt-tag {
+  display: inline-block; background: var(--teal-bg); color: var(--teal-dark);
+  border: 0.5px solid var(--teal); border-radius: 4px;
+  font-size: 9px; font-weight: 700; padding: 2px 6px; margin-left: 6px;
+  letter-spacing: .04em; vertical-align: middle; text-transform: uppercase;
+}
+.wa-format-hint {
+  font-size: 11px; color: var(--body); margin-top: 5px; padding-left: 2px;
+}
+
+/* ── PRIVACY NOTE ────────────────────────────── */
+.privacy-note {
+  display: flex; align-items: flex-start; gap: 8px;
+  background: var(--white); border: 0.5px solid var(--border);
+  border-radius: 10px; padding: 12px 14px;
+  font-size: 11px; color: var(--body); line-height: 1.6;
+}
+.privacy-icon {
+  width: 20px; height: 20px; border-radius: 6px; flex-shrink: 0;
+  background: var(--teal-bg); color: var(--teal-dark);
+  font-size: 11px; display: flex; align-items: center; justify-content: center; font-weight: 700;
+}
+
+/* ── SUBMIT BUTTON ───────────────────────────── */
+.submit-wrap { margin-top: 4px; }
+.submit-btn {
+  width: 100%; background: var(--pink); color: var(--white);
+  border: none; border-radius: 99px; padding: 16px 24px;
+  font-size: 16px; font-weight: 700; font-family: 'Poppins', sans-serif;
+  cursor: pointer; transition: opacity .15s, transform .1s;
+  letter-spacing: -.01em; position: relative; overflow: hidden;
+}
+.submit-btn:hover:not(:disabled) { opacity: .9; transform: translateY(-1px); }
+.submit-btn:disabled { opacity: .5; cursor: default; transform: none; }
+.submit-btn.loading { opacity: .8; pointer-events: none; }
+.submit-note {
+  text-align: center; font-size: 11px; color: var(--body);
+  margin-top: 10px;
+}
+
+/* ── ANIMATIONS ──────────────────────────────── */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.q-card { animation: fadeSlideUp .35s ease both; }
+.q-card:nth-child(1) { animation-delay: .04s; }
+.q-card:nth-child(2) { animation-delay: .08s; }
+.q-card:nth-child(3) { animation-delay: .12s; }
+.q-card:nth-child(4) { animation-delay: .16s; }
+.q-card:nth-child(5) { animation-delay: .20s; }
+.q-card:nth-child(6) { animation-delay: .24s; }
+.privacy-note { animation: fadeSlideUp .35s .28s ease both; }
+.submit-wrap  { animation: fadeSlideUp .35s .32s ease both; }
+
+@keyframes hintIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.club-hint.show { animation: hintIn .22s ease both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .q-card, .privacy-note, .submit-wrap { animation: none; }
+}
+
+@media (max-width: 480px) {
+  .two-col { grid-template-columns: 1fr; }
+  .step-item span { display: none; }
+  .step-connector { width: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="top-nav">
+  <a href="wmnlyfe-landing.html" style="text-decoration:none"><span class="nav-logo">WMNlyfe</span></a>
+  <div class="step-track">
+    <div class="step-item active">
+      <div class="step-num">1</div>
+      <span>Profil</span>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item future">
+      <div class="step-num">2</div>
+      <span>Quiz</span>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item future">
+      <div class="step-num">3</div>
+      <span>Hasil</span>
+    </div>
+  </div>
+</nav>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="header-eyebrow">Sebelum kita mulai</div>
+  <h1 class="header-title">Ceritakan sedikit<br>tentang dirimu</h1>
+  <p class="header-sub">Jawaban ini hanya digunakan untuk mempersonalisasi hasilmu.</p>
+  <div class="header-pills">
+    <span class="header-pill">&#128274; Data aman</span>
+    <span class="header-pill">&#10003; Tidak perlu buat akun</span>
+    <span class="header-pill">&#9201; Hanya 1 menit</span>
+  </div>
+</div>
+
+<!-- FORM -->
+<form class="form-wrap" id="profileForm" onsubmit="handleSubmit(event)" novalidate>
+
+  <!-- 01: Nama -->
+  <div class="q-card" id="card-name">
+    <div class="q-label">
+      <div class="q-num">1</div>
+      Nama panggilanmu
+    </div>
+    <div class="q-hint">Yang biasa dipanggil teman-temanmu, bukan nama lengkap</div>
+    <input
+      class="f-input" id="fieldName" type="text"
+      placeholder="Contoh: Dika, Sari, Anisa..."
+      maxlength="80" autocomplete="given-name"
+      oninput="clearErr('name')"
+      onblur="validateName()"
+    >
+    <div class="err-msg" id="errName">Nama minimal 2 karakter ya</div>
+  </div>
+
+  <!-- 02: Usia + Kota -->
+  <div class="two-col">
+
+    <div class="q-card" id="card-age">
+      <div class="q-label">
+        <div class="q-num">2</div>
+        Usia
+      </div>
+      <div class="q-hint" style="margin-bottom:12px">Tahun berjalan</div>
+      <div class="stepper" id="stepperWrap">
+        <button type="button" class="stepper-btn" onclick="changeAge(-1)" aria-label="Kurangi usia">&#8722;</button>
+        <input class="stepper-val" id="fieldAge" type="number" value="25" min="18" max="60" readonly aria-label="Usia">
+        <button type="button" class="stepper-btn" onclick="changeAge(1)" aria-label="Tambah usia">&#43;</button>
+      </div>
+      <div class="err-msg" id="errAge">Usia harus antara 18–60 tahun</div>
+    </div>
+
+    <div class="q-card" id="card-city">
+      <div class="q-label">
+        <div class="q-num">3</div>
+        Kota tempat tinggal
+      </div>
+      <div class="q-hint">Kota domisili saat ini</div>
+      <input
+        class="f-input" id="fieldCity" type="text"
+        placeholder="Jakarta, Bandung, Surabaya..."
+        maxlength="60" autocomplete="address-level2"
+        oninput="clearErr('city')"
+        onblur="validateCity()"
+      >
+      <div class="err-msg" id="errCity">Mohon isi nama kotamu</div>
+    </div>
+
+  </div>
+
+  <!-- 03: Gender -->
+  <div class="q-card" id="card-gender">
+    <div class="q-label">
+      <div class="q-num">4</div>
+      Kamu seorang...
+    </div>
+    <div class="q-hint">Pilihanmu tidak memengaruhi hasil quiz</div>
+    <div class="gender-pills" role="group" aria-label="Pilih gender">
+      <button type="button" class="gender-pill sel" id="gPil-female"    onclick="pickGender('female')"           >Perempuan</button>
+      <button type="button" class="gender-pill"     id="gPil-male"      onclick="pickGender('male')"             >Laki-laki</button>
+      <button type="button" class="gender-pill"     id="gPil-nonbinary" onclick="pickGender('prefer_not_to_say')">Prefer not to say</button>
+    </div>
+    <input type="hidden" id="fieldGender" value="female">
+  </div>
+
+  <!-- 04: Relationship Status — HERO CARD -->
+  <div class="q-card" id="card-status">
+    <div class="q-label">
+      <div class="q-num">5</div>
+      Hubungan seperti apa yang sedang kamu jalani?
+    </div>
+    <div class="q-hint">Ini menentukan club mana yang paling relevan untukmu</div>
+
+    <div class="status-grid" role="group" aria-label="Status relasi">
+      <div class="status-card" id="sc-single"        onclick="pickStatus('single',        this)">
+        <span class="status-icon">🌱</span>
+        <div class="status-name">Single</div>
+        <div class="status-desc">Belum dalam hubungan serius</div>
+      </div>
+      <div class="status-card" id="sc-in_relationship" onclick="pickStatus('in_relationship', this)">
+        <span class="status-icon">🌸</span>
+        <div class="status-name">Pacaran</div>
+        <div class="status-desc">Sedang menjalani hubungan</div>
+      </div>
+      <div class="status-card" id="sc-engaged"       onclick="pickStatus('engaged',       this)">
+        <span class="status-icon">💍</span>
+        <div class="status-name">Tunangan</div>
+        <div class="status-desc">Dalam perjalanan menuju pernikahan</div>
+      </div>
+      <div class="status-card" id="sc-married"       onclick="pickStatus('married',       this)">
+        <span class="status-icon">🏡</span>
+        <div class="status-name">Menikah</div>
+        <div class="status-desc">Sudah menikah</div>
+      </div>
+    </div>
+
+    <!-- Club hint (muncul setelah pilih) -->
+    <div class="club-hint" id="clubHint">
+      <div class="club-hint-dot" id="clubDot"></div>
+      <div class="club-hint-text" id="clubHintText"></div>
+    </div>
+
+    <input type="hidden" id="fieldStatus" value="">
+    <div class="err-msg" id="errStatus" style="padding-left:0">Pilih status relasi dulu ya</div>
+  </div>
+
+  <!-- 05: Kontak -->
+  <div class="q-card" id="card-contact">
+    <div class="q-label">
+      <div class="q-num">6</div>
+      Kontak kamu
+    </div>
+    <div class="q-hint">Untuk mengirimkan hasil lengkap setelah pembayaran</div>
+
+    <div class="contact-row">
+      <div>
+        <input
+          class="f-input" id="fieldEmail" type="email"
+          placeholder="email@kamu.com"
+          autocomplete="email"
+          oninput="clearErr('email')"
+          onblur="validateEmail()"
+        >
+        <div class="err-msg" id="errEmail">Masukkan alamat email yang valid ya</div>
+      </div>
+
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--dark);margin-bottom:6px">
+          WhatsApp <span class="opt-tag">Opsional</span>
+        </div>
+        <input
+          class="f-input" id="fieldWA" type="tel"
+          placeholder="628XXXXXXXXXX"
+          autocomplete="tel"
+          oninput="formatWA(this)"
+        >
+        <div class="wa-format-hint">Format: 628XXXXXXXXXX &nbsp;·&nbsp; Contoh: 6281234567890</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRIVACY NOTE -->
+  <div class="privacy-note">
+    <div class="privacy-icon">&#128274;</div>
+    <div>
+      Data yang kamu masukkan hanya digunakan untuk mempersonalisasi hasil assessment dan mengirimkan PDF hasil lengkap. Tidak dibagikan ke pihak ketiga manapun. Dengan melanjutkan, kamu menyetujui <a href="#" style="color:var(--pink);text-decoration:none;font-weight:600">Kebijakan Privasi</a> WMNlyfe.
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="submit-wrap">
+    <button class="submit-btn" type="submit" id="submitBtn">
+      Mulai Quiz &nbsp;&#8594;
+    </button>
+    <div class="submit-note">
+      Kamu akan menjawab 10 pertanyaan singkat setelah ini
+    </div>
+  </div>
+
+</form>
+
+<script>
+/* ─── GENDER ──────────────────────────────────────── */
+function pickGender(val) {
+  ['female','male','prefer_not_to_say'].forEach(v => {
+    const idMap = { female:'gPil-female', male:'gPil-male', prefer_not_to_say:'gPil-nonbinary' };
+    document.getElementById(idMap[v]).classList.toggle('sel', v === val);
+  });
+  document.getElementById('fieldGender').value = val;
+}
+
+/* ─── STATUS ──────────────────────────────────────── */
+const CLUB_HINTS = {
+  single: {
+    text: '<strong>Kemungkinan cocok untuk Singles Club</strong>Memahami dirimu sebelum masuk hubungan berikutnya.',
+    bg: 'var(--purple-bg)', bd: 'var(--purple-bd)', tx: 'var(--purple-dark)', dot: '#7F77DD'
+  },
+  in_relationship: {
+    text: '<strong>Kemungkinan cocok untuk Singles Club</strong>Banyak yang bisa dipelajari sebelum melangkah lebih jauh.',
+    bg: 'var(--pink-light)', bd: 'var(--pink-mid)', tx: 'var(--pink-deep)', dot: 'var(--pink)'
+  },
+  engaged: {
+    text: '<strong>Kemungkinan cocok untuk Pre-Marriage Club</strong>Persiapan pernikahan yang jauh lebih dari sekadar hari H.',
+    bg: 'var(--pink-light)', bd: 'var(--pink-mid)', tx: 'var(--pink-deep)', dot: 'var(--pink)'
+  },
+  married: {
+    text: '<strong>Kemungkinan cocok untuk Newlyweds Club</strong>Navigasi tahun-tahun awal pernikahan bersama-sama.',
+    bg: 'var(--teal-bg)', bd: 'var(--teal)', tx: 'var(--teal-dark)', dot: 'var(--teal)'
+  }
+};
+
+function pickStatus(val, el) {
+  document.querySelectorAll('.status-card').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('fieldStatus').value = val;
+  clearErr('status');
+
+  const hint  = document.getElementById('clubHint');
+  const info  = CLUB_HINTS[val];
+  hint.style.background   = info.bg;
+  hint.style.borderColor  = info.bd;
+  hint.style.color        = info.tx;
+  document.getElementById('clubDot').style.background = info.dot;
+  document.getElementById('clubHintText').innerHTML   = info.text;
+  hint.classList.add('show');
+}
+
+/* ─── AGE STEPPER ─────────────────────────────────── */
+function changeAge(delta) {
+  const inp = document.getElementById('fieldAge');
+  const val = parseInt(inp.value) + delta;
+  if (val < 18 || val > 60) return;
+  inp.value = val;
+  clearErr('age');
+  document.getElementById('stepperWrap').classList.remove('err');
+  document.getElementById('stepperWrap').classList.toggle('ok', val >= 18 && val <= 60);
+}
+
+/* ─── VALIDATION ──────────────────────────────────── */
+function showErr(field, show = true) {
+  document.getElementById('err' + cap(field)).classList.toggle('show', show);
+}
+function clearErr(field) {
+  showErr(field, false);
+  if (field === 'name')  { setInputState('fieldName',  ''); }
+  if (field === 'city')  { setInputState('fieldCity',  ''); }
+  if (field === 'email') { setInputState('fieldEmail', ''); }
+  if (field === 'age')   { document.getElementById('stepperWrap').classList.remove('err'); }
+}
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+function setInputState(id, state) {
+  const el = document.getElementById(id);
+  el.classList.remove('err','ok');
+  if (state) el.classList.add(state);
+}
+
+function validateName() {
+  const v = document.getElementById('fieldName').value.trim();
+  const ok = v.length >= 2;
+  setInputState('fieldName', ok ? 'ok' : 'err');
+  showErr('name', !ok);
+  return ok;
+}
+function validateAge() {
+  const v = parseInt(document.getElementById('fieldAge').value);
+  const ok = v >= 18 && v <= 60;
+  document.getElementById('stepperWrap').classList.toggle('err', !ok);
+  document.getElementById('stepperWrap').classList.toggle('ok',   ok);
+  showErr('age', !ok);
+  return ok;
+}
+function validateCity() {
+  const v = document.getElementById('fieldCity').value.trim();
+  const ok = v.length >= 2;
+  setInputState('fieldCity', ok ? 'ok' : 'err');
+  showErr('city', !ok);
+  return ok;
+}
+function validateEmail() {
+  const v = document.getElementById('fieldEmail').value.trim();
+  const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  setInputState('fieldEmail', ok ? 'ok' : 'err');
+  showErr('email', !ok);
+  return ok;
+}
+function validateStatus() {
+  const ok = !!document.getElementById('fieldStatus').value;
+  showErr('status', !ok);
+  if (!ok) document.getElementById('card-status').scrollIntoView({ behavior:'smooth', block:'center' });
+  return ok;
+}
+
+/* ─── WhatsApp FORMAT ─────────────────────────────── */
+function formatWA(el) {
+  let v = el.value.replace(/\D/g,'');
+  if (v.startsWith('0')) v = '62' + v.slice(1);
+  el.value = v;
+}
+
+/* ─── SUBMIT ──────────────────────────────────────── */
+function handleSubmit(e) {
+  e.preventDefault();
+
+  const checks = [
+    validateName(),
+    validateAge(),
+    validateCity(),
+    validateEmail(),
+    validateStatus()
+  ];
+
+  if (!checks.every(Boolean)) {
+    // scroll to first error
+    const firstErr = document.querySelector('.f-input.err, .stepper.err');
+    if (firstErr) firstErr.scrollIntoView({ behavior:'smooth', block:'center' });
+    return;
+  }
+
+  // Collect payload
+  const payload = {
+    name:                document.getElementById('fieldName').value.trim(),
+    gender:              document.getElementById('fieldGender').value,
+    relationship_status: document.getElementById('fieldStatus').value,
+    age:                 parseInt(document.getElementById('fieldAge').value),
+    city:                document.getElementById('fieldCity').value.trim(),
+    contact: {
+      email:    document.getElementById('fieldEmail').value.trim(),
+      whatsapp: document.getElementById('fieldWA').value.trim() || null
+    }
+  };
+
+  // Simulate loading
+  const btn = document.getElementById('submitBtn');
+  btn.disabled  = true;
+  btn.classList.add('loading');
+  btn.textContent = 'Memulai quiz...';
+
+  setTimeout(() => {
+    console.log('Session payload:', payload);
+    // Simpan nama ke sessionStorage untuk dipakai di halaman berikutnya
+    sessionStorage.setItem('wmnlyfe_name', payload.name);
+    sessionStorage.setItem('wmnlyfe_status', payload.relationship_status);
+    window.location.href = 'wmnlyfe-quiz.html';
+  }, 1400);
+}
+
+/* ─── INIT ────────────────────────────────────────── */
+document.getElementById('fieldName').focus();
+</script>
+</body>
+</html>

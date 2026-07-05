@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WMNlyfe — Kenali Gaya Relasi-mu</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --pink:      #D4527B;
+    --pink-deep: #4B1528;
+    --pink-mid:  #ED93B1;
+    --pink-light:#FBEAF0;
+    --cream:     #FAF7F4;
+    --dark:      #1C1C2E;
+    --body:      #5A5A7A;
+    --white:     #FFFFFF;
+    --purple-bg: #EEEDFE;
+    --purple-bd: #AFA9EC;
+    --purple-tx: #26215C;
+    --teal-bg:   #E1F5EE;
+    --teal-bd:   #5DCAA5;
+    --teal-tx:   #04342C;
+    --r: 12px;
+  }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ─────────────────────────────────────── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(250,247,244,.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 0.5px solid #ED93B133;
+    padding: 14px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo { font-weight: 800; font-size: 18px; color: var(--pink); }
+  .nav-logo span { font-weight: 500; font-size: 11px; color: var(--body); margin-left: 6px; }
+  .nav-cta {
+    background: var(--pink); color: var(--white);
+    border: none; border-radius: 99px;
+    padding: 8px 22px; font-size: 13px; font-weight: 600;
+    font-family: 'Poppins', sans-serif; cursor: pointer;
+    transition: opacity .15s;
+  }
+  .nav-cta:hover { opacity: .88; }
+
+  /* ── SECTION WRAPPER ──────────────────────────── */
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+
+  /* ── EYEBROW PILL ─────────────────────────────── */
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: var(--pink-light); border: 0.5px solid var(--pink-mid);
+    border-radius: 99px; padding: 5px 16px;
+    font-size: 11px; font-weight: 600; color: var(--pink);
+    letter-spacing: .04em; margin-bottom: 22px;
+  }
+  .eyebrow-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--pink); flex-shrink: 0;
+  }
+
+  /* ── HERO ─────────────────────────────────────── */
+  .hero { padding: 64px 0 0; text-align: center; }
+  .hero h1 {
+    font-size: clamp(30px, 5vw, 42px); font-weight: 800;
+    line-height: 1.18; letter-spacing: -.025em;
+    color: var(--dark); margin-bottom: 16px;
+  }
+  .hero h1 em { font-style: normal; color: var(--pink); }
+  .hero .sub {
+    font-size: 15px; color: var(--body); line-height: 1.75;
+    max-width: 440px; margin: 0 auto 36px;
+  }
+  .hero-btns {
+    display: flex; gap: 12px; justify-content: center;
+    flex-wrap: wrap; margin-bottom: 52px;
+  }
+  .btn-primary {
+    background: var(--pink); color: var(--white);
+    border: none; border-radius: 99px;
+    padding: 14px 36px; font-size: 15px; font-weight: 700;
+    font-family: 'Poppins', sans-serif; cursor: pointer;
+    transition: opacity .15s, transform .1s;
+    letter-spacing: -.01em;
+  }
+  .btn-primary:hover { opacity: .9; transform: translateY(-1px); }
+  .btn-outline {
+    background: transparent; color: var(--pink);
+    border: 1.5px solid var(--pink); border-radius: 99px;
+    padding: 13px 24px; font-size: 14px; font-weight: 600;
+    font-family: 'Poppins', sans-serif; cursor: pointer;
+    transition: background .15s;
+  }
+  .btn-outline:hover { background: var(--pink-light); }
+
+  /* ── ARCHETYPE CARDS ──────────────────────────── */
+  .card-stage {
+    position: relative; height: 210px;
+    max-width: 520px; margin: 0 auto 14px;
+  }
+  .arc-card {
+    position: absolute; width: 168px;
+    background: var(--white);
+    border-radius: var(--r);
+    padding: 14px 14px 18px;
+    box-shadow: 0 6px 24px rgba(28,28,46,.1);
+    cursor: default;
+    transition: transform .22s ease, z-index 0s;
+    user-select: none;
+  }
+  .arc-card:hover { z-index: 10 !important; transform: rotate(0deg) translateY(-6px) scale(1.04) !important; }
+  .arc-emoji {
+    border-radius: 8px; padding: 12px 8px;
+    text-align: center; font-size: 26px; margin-bottom: 10px;
+  }
+  .arc-name { font-size: 12px; font-weight: 700; margin-bottom: 3px; }
+  .arc-sub { font-size: 10px; color: var(--body); font-weight: 500; }
+  .card-hint { font-size: 11px; color: var(--body); text-align: center; }
+
+  /* ── STATS BAR ────────────────────────────────── */
+  .stats-bar {
+    background: var(--pink); margin-top: 40px;
+    padding: 18px 24px;
+    display: flex; justify-content: center; gap: clamp(20px,4vw,56px);
+    flex-wrap: wrap;
+  }
+  .stat-item { text-align: center; color: var(--white); }
+  .stat-n { font-size: 22px; font-weight: 800; line-height: 1; }
+  .stat-l { font-size: 11px; font-weight: 500; opacity: .82; margin-top: 2px; }
+
+  /* ── HOW IT WORKS ─────────────────────────────── */
+  .section { padding: 60px 0; }
+  .section-label {
+    font-size: 11px; font-weight: 600; color: var(--pink);
+    letter-spacing: .1em; text-transform: uppercase; margin-bottom: 8px;
+  }
+  .section-title { font-size: clamp(22px, 3vw, 28px); font-weight: 700; color: var(--dark); }
+  .section-sub { font-size: 14px; color: var(--body); margin-top: 8px; }
+
+  .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 36px; }
+  .step-card {
+    background: var(--white); border-radius: var(--r);
+    padding: 20px 18px;
+    border-left: 3px solid var(--pink);
+    border-top: 0.5px solid #ED93B133;
+    border-right: 0.5px solid #ED93B133;
+    border-bottom: 0.5px solid #ED93B133;
+  }
+  .step-num { font-size: 11px; font-weight: 700; color: var(--pink); letter-spacing: .06em; margin-bottom: 10px; }
+  .step-title { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 6px; line-height: 1.35; }
+  .step-desc { font-size: 12px; color: var(--body); line-height: 1.65; }
+
+  /* ── CLUBS ────────────────────────────────────── */
+  .clubs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 36px; }
+  .club-card { border-radius: var(--r); padding: 20px 16px; border: 0.5px solid; }
+  .club-sub-badge {
+    display: inline-block; font-size: 10px; font-weight: 600;
+    padding: 3px 9px; border-radius: 4px; margin-bottom: 12px;
+    background: rgba(255,255,255,.6); border: 0.5px solid currentColor;
+    letter-spacing: .03em;
+  }
+  .club-title { font-size: 14px; font-weight: 700; margin-bottom: 8px; line-height: 1.3; }
+  .club-desc { font-size: 11px; line-height: 1.65; opacity: .8; }
+
+  /* ── TESTIMONIAL ──────────────────────────────── */
+  .testimonial {
+    background: var(--dark); padding: 48px 32px;
+    text-align: center; border-radius: 16px;
+    margin: 0 0 0;
+  }
+  .testi-quote {
+    font-size: 18px; font-weight: 600; color: var(--white);
+    line-height: 1.6; max-width: 480px; margin: 0 auto 20px;
+    font-style: italic;
+  }
+  .testi-name { font-size: 12px; color: rgba(255,255,255,.5); font-weight: 500; }
+
+  /* ── CTA FOOTER ───────────────────────────────── */
+  .cta-section {
+    background: var(--pink-light);
+    border-top: 0.5px solid var(--pink-mid);
+    padding: 64px 24px; text-align: center;
+  }
+  .cta-section h2 {
+    font-size: clamp(24px, 3.5vw, 32px); font-weight: 800;
+    color: var(--pink-deep); margin-bottom: 10px; letter-spacing: -.02em;
+  }
+  .cta-section p { font-size: 14px; color: var(--body); margin-bottom: 32px; }
+  .cta-pills {
+    display: flex; gap: 10px; justify-content: center;
+    flex-wrap: wrap; margin-bottom: 32px;
+  }
+  .pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--white); border: 0.5px solid var(--pink-mid);
+    border-radius: 99px; padding: 6px 14px;
+    font-size: 12px; font-weight: 500; color: var(--pink-deep);
+  }
+  .pill::before { content: "✓"; color: var(--pink); font-weight: 700; }
+
+  /* ── SITE FOOTER ──────────────────────────────── */
+  footer {
+    background: var(--dark); padding: 24px;
+    text-align: center;
+  }
+  footer p { font-size: 11px; color: rgba(255,255,255,.35); }
+  footer span { color: var(--pink); }
+
+  /* ── RESPONSIVE ───────────────────────────────── */
+  @media (max-width: 600px) {
+    .steps-grid, .clubs-grid { grid-template-columns: 1fr; }
+    .card-stage { height: auto; position: static; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+    .arc-card { position: static !important; transform: none !important; width: 100%; max-width: 280px; }
+    .hero h1 { font-size: 28px; }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .arc-card { animation: floatIn .5s ease both; }
+    .arc-card:nth-child(1) { animation-delay: .05s; }
+    .arc-card:nth-child(2) { animation-delay: .15s; }
+    .arc-card:nth-child(3) { animation-delay: .25s; }
+    @keyframes floatIn {
+      from { opacity: 0; transform: translateY(12px) var(--init-rot, rotate(0deg)); }
+      to   { opacity: 1; }
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="wmnlyfe-landing.html" style="text-decoration:none"><div class="nav-logo">WMNlyfe <span>Relationship Club</span></div></a>
+  <button class="nav-cta" onclick="window.location.href='wmnlyfe-form.html'">Mulai Quiz</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">
+      <span class="eyebrow-dot"></span>
+      Relationship Assessment by WMNlyfe · Narasi TV
+    </div>
+    <h1>Kenali Gaya Konflik-mu<br><em>dalam Hubungan</em></h1>
+    <p class="sub">
+      Quiz 5 menit untuk memahami fight language-mu — 
+      langkah pertama menuju hubungan yang lebih sehat, jujur, dan bertumbuh bersama.
+    </p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="window.location.href='wmnlyfe-form.html'">Mulai Quiz Gratis →</button>
+      <button class="btn-outline" onclick="document.querySelector('.section').scrollIntoView({behavior:'smooth'})">Pelajari lebih dulu ↓</button>
+    </div>
+
+    <!-- Floating archetype cards -->
+    <div class="card-stage">
+
+      <!-- Card 1: Avoider -->
+      <div class="arc-card" style="left:0%;top:10px;transform:rotate(-7deg);z-index:1;border:1.5px solid var(--purple-bd);">
+        <div class="arc-emoji" style="background:var(--purple-bg);">🕊️</div>
+        <div class="arc-name" style="color:var(--purple-tx);">Si Penjaga Damai</div>
+        <div class="arc-sub">Conflict Avoider</div>
+      </div>
+
+      <!-- Card 2: Confronter (featured, center) -->
+      <div class="arc-card" style="left:calc(50% - 84px);top:0;transform:rotate(1deg);z-index:3;border:1.5px solid var(--pink-mid);">
+        <div class="arc-emoji" style="background:var(--pink-light);">🔥</div>
+        <div class="arc-name" style="color:var(--pink-deep);">Si Petarung Jujur</div>
+        <div class="arc-sub">Direct Confronter</div>
+      </div>
+
+      <!-- Card 3: Internalizer -->
+      <div class="arc-card" style="right:0%;top:14px;transform:rotate(7deg);z-index:2;border:1.5px solid var(--teal-bd);">
+        <div class="arc-emoji" style="background:var(--teal-bg);">🌊</div>
+        <div class="arc-name" style="color:var(--teal-tx);">Si Pemikir Dalam</div>
+        <div class="arc-sub">Silent Processor</div>
+      </div>
+
+    </div>
+    <p class="card-hint">Hover kartu untuk lihat lebih dekat · Kamu akan menemukan tipe-mu setelah quiz</p>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-n">1.200+</div>
+    <div class="stat-l">perempuan sudah ikut</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-n">15</div>
+    <div class="stat-l">pertanyaan singkat</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-n">3</div>
+    <div class="stat-l">tipe club eksklusif</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-n">5 mnt</div>
+    <div class="stat-l">waktu pengerjaan</div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="section">
+  <div class="wrap">
+    <div style="text-align:center">
+      <p class="section-label">Caranya simpel</p>
+      <h2 class="section-title">Tiga langkah, lima menit</h2>
+      <p class="section-sub">Tidak perlu buat akun. Langsung jawab, langsung dapat hasilnya.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <p class="step-title">Isi profil singkat</p>
+        <p class="step-desc">Nama, usia, status relasi, dan kota. Data aman dan tidak dibagikan ke pihak lain.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <p class="step-title">Jawab 15 pertanyaan</p>
+        <p class="step-desc">Tentang cara kamu merespons konflik, ketegangan, dan momen sulit dalam hubungan.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <p class="step-title">Dapat hasil & insight</p>
+        <p class="step-desc">Temukan gaya relasi-mu secara gratis. Upgrade untuk analisis mendalam dan saran konkret.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLUBS PREVIEW -->
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <div style="text-align:center">
+      <p class="section-label">Setelah quiz</p>
+      <h2 class="section-title">Bergabung ke club yang tepat</h2>
+      <p class="section-sub">1 main club · 3 sub-club · Sept – Des 2026 · Maks. 20 anggota per club</p>
+    </div>
+    <div class="clubs-grid">
+      <div class="club-card" style="background:var(--purple-bg);border-color:var(--purple-bd);color:var(--purple-tx)">
+        <div class="club-sub-badge">Untuk yang single</div>
+        <p class="club-title">Singles Club</p>
+        <p class="club-desc">Attachment style, red flags, intentional dating, dan cara membangun diri sebelum masuk hubungan serius.</p>
+      </div>
+      <div class="club-card" style="background:var(--pink-light);border-color:var(--pink-mid);color:var(--pink-deep)">
+        <div class="club-sub-badge">Mau menikah</div>
+        <p class="club-title">Pre-Marriage Club</p>
+        <p class="club-desc">Compatibility audit, fight languages, alignment finansial dan visi hidup sebelum hari H.</p>
+      </div>
+      <div class="club-card" style="background:var(--teal-bg);border-color:var(--teal-bd);color:var(--teal-tx)">
+        <div class="club-sub-badge">Pengantin baru</div>
+        <p class="club-title">Newlyweds Club</p>
+        <p class="club-desc">Navigasi tahun pertama: finansial, intimacy, keluarga besar, dan menjaga hubungan tetap sehat.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <div class="testimonial">
+      <p class="testi-quote">
+        "Aku pikir aku sudah paham diri sendiri — ternyata quiz ini membuka hal yang selama ini aku abaikan dalam hubungan."
+      </p>
+      <p class="testi-name">Annisa, 27 · Jakarta · Pre-Marriage Club</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA SECTION -->
+<section class="cta-section">
+  <h2>Siap kenali diri sendiri?</h2>
+  <p>Gratis, cepat, dan hasilnya bisa langsung kamu share ke orang terdekat.</p>
+  <div class="cta-pills">
+    <span class="pill">Gratis untuk mulai</span>
+    <span class="pill">Hanya 5 menit</span>
+    <span class="pill">Bisa dibagikan ke pasangan</span>
+    <span class="pill">Tanpa buat akun</span>
+  </div>
+  <button class="btn-primary" style="font-size:16px;padding:16px 44px">
+    <a href="wmnlyfe-form.html" style="color:inherit;text-decoration:none">Mulai Quiz Sekarang →</a>
+  </button>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p><span>WMNlyfe</span> · Narasi TV · 2026 · Semua data digunakan hanya untuk keperluan assessment</p>
+</footer>
+
+</body>
+</html>
